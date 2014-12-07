@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_gravity="top|center_horizontal"
+	android:background="@android:color/black"
+	tools:context=".qc.QCActivity">
+
+	<LinearLayout
+		android:id="@+id/cover"
+		android:layout_width="1142px"
+		android:layout_height="1100px"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"
+		android:background="@color/background_material_light"
+		android:orientation="vertical">
+
+	</LinearLayout>
+
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/quickcover_mask"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
