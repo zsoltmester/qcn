@@ -1,0 +1,13 @@
+<resources>
+
+	<!-- Light application theme. -->
+	<style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="coverStyle">@style/lightCoverStyle</item>
+	</style>
+
+	<!-- Light application theme. -->
+	<style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="coverStyle">@style/darkCoverStyle</item>
+	</style>
+
+</resources>

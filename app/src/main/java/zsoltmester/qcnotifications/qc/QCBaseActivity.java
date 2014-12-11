@@ -12,12 +12,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import zsoltmester.qcnotifications.R;
 
-public class QCBaseActivity extends Activity {
+class QCBaseActivity extends Activity {
 
 	private final String TAG = QCBaseActivity.class.getSimpleName();
 
@@ -31,10 +31,20 @@ public class QCBaseActivity extends Activity {
 	private int circleDiameter;
 
 	// Device model info
-	private boolean isG3;
+	private final boolean isG3;
 
 	private Context applicationContext;
 	private ContentResolver contentResolver;
+
+	public QCBaseActivity() {
+		super();
+
+		// Is this G3?
+		final String device = android.os.Build.DEVICE;
+		Log.d(TAG, "device:" + device);
+		isG3 = device.equals("g3") || device.equals("tiger6");
+		Log.d(TAG, "isG3:" + isG3);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +58,6 @@ public class QCBaseActivity extends Activity {
 
 		applicationContext = getApplicationContext();
 		contentResolver = getContentResolver();
-
-		// Is this G3?
-		final String device = android.os.Build.DEVICE;
-		Log.d(TAG, "device:" + device);
-		isG3 = device.equals("g3") || device.equals("tiger6");
-		Log.d(TAG, "isG3:" + isG3);
 
 		registerIntentReceiver();
 
@@ -74,7 +78,7 @@ public class QCBaseActivity extends Activity {
 	}
 
 	private void registerIntentReceiver() {
-		IntentFilter filter = new IntentFilter();
+		final IntentFilter filter = new IntentFilter();
 		filter.addAction(ACTION_ACCESSORY_COVER_EVENT);
 		applicationContext.registerReceiver(intentReceiver, filter);
 	}
@@ -129,7 +133,7 @@ public class QCBaseActivity extends Activity {
 
 	private void setCircleLayoutParam(View view) {
 
-		final LinearLayout layout = (LinearLayout) view;
+		final FrameLayout layout = (FrameLayout) view;
 		final RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) layout.getLayoutParams();
 
 		if (circleXpos < 0) {
@@ -150,7 +154,7 @@ public class QCBaseActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
+			final String action = intent.getAction();
 
 			if (action == null) {
 				return;
