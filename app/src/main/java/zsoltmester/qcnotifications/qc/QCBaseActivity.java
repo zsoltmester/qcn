@@ -17,9 +17,9 @@ import android.widget.RelativeLayout;
 
 import zsoltmester.qcnotifications.R;
 
-public final class QCActivity extends Activity {
+public class QCBaseActivity extends Activity {
 
-	private final String TAG = QCActivity.class.getSimpleName();
+	private final String TAG = QCBaseActivity.class.getSimpleName();
 
 	// Declared in LGIntent.java of LG Framework
 	private final String ACTION_ACCESSORY_COVER_EVENT = "com.lge.android.intent.action.ACCESSORY_COVER_EVENT";
@@ -39,7 +39,6 @@ public final class QCActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		Log.d(TAG, "onCreate");
 
 		// TODO setTheme call here
@@ -69,7 +68,6 @@ public final class QCActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
 		Log.d(TAG, "onDestroy");
 
 		applicationContext.unregisterReceiver(intentReceiver);
@@ -90,7 +88,7 @@ public final class QCActivity extends Activity {
 		}
 	}
 
-	void initializeViewInformationFromDB() {
+	private void initializeViewInformationFromDB() {
 
 		if (contentResolver == null) {
 			return;
@@ -129,7 +127,7 @@ public final class QCActivity extends Activity {
 		Log.d(TAG, "circleDiameter:" + circleDiameter);
 	}
 
-	void setCircleLayoutParam(View view) {
+	private void setCircleLayoutParam(View view) {
 
 		final LinearLayout layout = (LinearLayout) view;
 		final RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) layout.getLayoutParams();
@@ -186,7 +184,7 @@ public final class QCActivity extends Activity {
 					break;
 				case EXTRA_VALUE_ACCESSORY_COVER_OPENED:
 					// OPENED
-					QCActivity.this.finish();
+					QCBaseActivity.this.finish();
 					break;
 			}
 		}
