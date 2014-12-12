@@ -31,20 +31,10 @@ class QCBaseActivity extends Activity {
 	private int circleDiameter;
 
 	// Device model info
-	private final boolean isG3;
+	private boolean isG3;
 
 	private Context applicationContext;
 	private ContentResolver contentResolver;
-
-	public QCBaseActivity() {
-		super();
-
-		// Is this G3?
-		final String device = android.os.Build.DEVICE;
-		Log.d(TAG, "device:" + device);
-		isG3 = device.equals("g3") || device.equals("tiger6");
-		Log.d(TAG, "isG3:" + isG3);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +48,12 @@ class QCBaseActivity extends Activity {
 
 		applicationContext = getApplicationContext();
 		contentResolver = getContentResolver();
+
+		// Is this G3?
+		final String device = android.os.Build.DEVICE;
+		Log.d(TAG, "device:" + device);
+		isG3 = device.equals("g3") || device.equals("tiger6");
+		Log.d(TAG, "isG3:" + isG3);
 
 		registerIntentReceiver();
 
