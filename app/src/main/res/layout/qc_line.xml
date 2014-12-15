@@ -5,6 +5,7 @@
 	android:layout_height="wrap_content"
 	android:layout_marginLeft="@dimen/qc_card_margins"
 	android:layout_marginRight="@dimen/qc_card_margins"
+	android:layout_marginBottom="@dimen/qc_default_margin"
 	card_view:cardCornerRadius="@dimen/qc_card_corner_radius">
 
 	<LinearLayout
@@ -50,7 +51,7 @@
 					android:layout_width="@dimen/qc_icon_size"
 					android:layout_height="@dimen/qc_icon_size"
 					android:scaleType="centerCrop"
-					android:background="@color/background_material_dark" />
+					android:background="@android:color/black" />
 
 				<TextView
 					android:id="@+id/date"
@@ -87,7 +88,7 @@
 			android:id="@+id/divider"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
-			android:background="@color/background_material_dark" />
+			android:background="@android:color/black" />
 
 		<LinearLayout
 			android:id="@+id/buttons_frame"

@@ -1,12 +1,12 @@
 <resources>
 
 	<!-- Light application theme. -->
-	<style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="LightTheme" parent="android:Theme.Material.Light.NoActionBar.Fullscreen">
 		<item name="coverStyle">@style/lightCoverStyle</item>
 	</style>
 
-	<!-- Light application theme. -->
-	<style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<!-- Dark application theme. -->
+	<style name="DarkTheme" parent="android:Theme.Material.NoActionBar.Fullscreen">
 		<item name="coverStyle">@style/darkCoverStyle</item>
 	</style>
 
