@@ -11,11 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import zsoltmester.qcnotifications.R;
+import zsoltmester.qcnotifications.notifications.NotificationHelper;
 import zsoltmester.qcnotifications.notifications.QCNotificationAdapter;
 import zsoltmester.qcnotifications.notifications.QCNotificationListener;
 import zsoltmester.qcnotifications.notifications.QCNotificationListener.QCNotificationBinder;
 
-public final class QCNotificationActivity extends QCBaseActivity implements ServiceConnection {
+public class QCNotificationActivity extends QCBaseActivity implements ServiceConnection {
 
 	private final String TAG = QCNotificationActivity.class.getSimpleName();
 
@@ -29,7 +30,7 @@ public final class QCNotificationActivity extends QCBaseActivity implements Serv
 		super.onStart();
 		Log.d(TAG, "onStart");
 
-		final Intent intent = new Intent(this, QCNotificationListener.class);
+		Intent intent = new Intent(this, QCNotificationListener.class);
 		intent.setAction(QCNotificationListener.ACTION_NOTIFICATION_LISTENER);
 		bindService(intent, this, BIND_AUTO_CREATE);
 	}
@@ -41,7 +42,7 @@ public final class QCNotificationActivity extends QCBaseActivity implements Serv
 
 		notificationListView = (RecyclerView) findViewById(R.id.notification_list);
 
-		final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+		RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 		notificationListView.setLayoutManager(layoutManager);
 
 		updateList();
@@ -57,7 +58,7 @@ public final class QCNotificationActivity extends QCBaseActivity implements Serv
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
-		final QCNotificationListener listener = ((QCNotificationBinder) service).getService();
+		QCNotificationListener listener = ((QCNotificationBinder) service).getService();
 
 		notifications = listener.getActiveNotifications();
 
@@ -71,12 +72,22 @@ public final class QCNotificationActivity extends QCBaseActivity implements Serv
 	}
 
 	private void updateList() {
-		if (adapter == null) {
-			adapter = new QCNotificationAdapter(notifications);
-			notificationListView.setAdapter(adapter);
-		} else if (adapter.getNotifications() != notifications){
-			adapter.updateNotificationsArray(notifications);
-			adapter.notifyDataSetChanged();
+		if (notifications != null && notifications.length > 0) {
+			StatusBarNotification[] updatedNotifications = NotificationHelper.selectNotNullNotifications(notifications);
+
+			if (updatedNotifications.length == 0) {
+				return;
+			}
+
+			updatedNotifications = NotificationHelper.sortNotificationsByPriority(updatedNotifications);
+
+			if (adapter == null) {
+				adapter = new QCNotificationAdapter(updatedNotifications);
+				notificationListView.setAdapter(adapter);
+			} else {
+				adapter.updateNotificationsArray(updatedNotifications);
+				adapter.notifyDataSetChanged();
+			}
 		}
 	}
 }

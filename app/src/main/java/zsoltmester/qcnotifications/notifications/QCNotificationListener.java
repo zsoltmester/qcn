@@ -7,14 +7,14 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-public final class QCNotificationListener extends NotificationListenerService {
+public class QCNotificationListener extends NotificationListenerService {
 
 	private final String TAG = QCNotificationListener.class.getSimpleName();
 
 	public static final String ACTION_NOTIFICATION_LISTENER =
 			"zsoltmester.qcnotifications.notifications.NOTIFICATION_LISTENER";
 
-	private final IBinder binder = new QCNotificationBinder();
+	private IBinder binder = new QCNotificationBinder();
 
 	@Override
 	public IBinder onBind(Intent intent) {

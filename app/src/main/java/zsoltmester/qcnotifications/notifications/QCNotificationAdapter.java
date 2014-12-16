@@ -21,15 +21,16 @@ import java.util.Date;
 
 import zsoltmester.qcnotifications.R;
 
-public final class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAdapter.ViewHolder> {
+public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAdapter.ViewHolder> {
 
-	private static final SimpleDateFormat todayFormat = new SimpleDateFormat("HH:mm");
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d");
+	private static final String TAG = QCNotificationAdapter.class.getSimpleName();
 
-	// TODO have to sort this
+	private static final SimpleDateFormat TODAY_FORMAT = new SimpleDateFormat("HH:mm");
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d");
+
 	private StatusBarNotification[] notifications;
 
-	public QCNotificationAdapter(final StatusBarNotification[] notifications) {
+	public QCNotificationAdapter(StatusBarNotification[] notifications) {
 		this.notifications = notifications;
 	}
 
@@ -84,25 +85,27 @@ public final class QCNotificationAdapter extends RecyclerView.Adapter<QCNotifica
 		}
 
 		// text
-		// TODO lines doesn't appear in gmail notification
+		// TODO lines don't appear in gmail notification
+		// TODO + newline at the end
 		holder.text.setVisibility(View.VISIBLE);
 		String newline = System.getProperty("line.separator");
 
 		String text = extras.getString(Notification.EXTRA_TEXT);
-		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
+		String subText = extras.getString(Notification.EXTRA_SUB_TEXT);
 		String summaryText = extras.getString(Notification.EXTRA_SUMMARY_TEXT);
 		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+		String inboxText = "";
+		if (lines != null) {
+			for (CharSequence line : lines) {
+				inboxText += line + newline;
+			}
+		}
 
 		String visibleText = "";
 		visibleText += text != null ? text + newline : "";
-		if (lines != null) {
-			for (CharSequence lineCharSequence : lines) {
-				String line = lineCharSequence.toString();
-				visibleText += line + newline;
-			}
-		}
-		visibleText += infoText != null ? infoText + newline : "";
+		visibleText += !inboxText.isEmpty() ? inboxText + newline : "";
 		visibleText += summaryText != null ? summaryText : "";
+		visibleText += subText != null ? subText + newline : "";
 		if (!visibleText.isEmpty()) {
 			holder.text.setText(visibleText);
 		} else {
@@ -134,7 +137,8 @@ public final class QCNotificationAdapter extends RecyclerView.Adapter<QCNotifica
 		}
 
 		// icon
-		// TODO background bug sometimes
+		// TODO background issues
+		// TODO background color
 		holder.icon.setVisibility(View.VISIBLE);
 
 		Integer iconRes = notifications[position].getNotification().icon;
@@ -166,9 +170,17 @@ public final class QCNotificationAdapter extends RecyclerView.Adapter<QCNotifica
 		Date date = new Date(notifications[position].getPostTime());
 
 		if (DateUtils.isToday(date.getTime())) {
-			holder.date.setText(todayFormat.format(date));
+			holder.date.setText(TODAY_FORMAT.format(date));
 		} else {
-			holder.date.setText(dateFormat.format(date));
+			holder.date.setText(DATE_FORMAT.format(date));
+		}
+
+		// info
+		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
+		if (infoText != null && !infoText.isEmpty()) {
+			holder.info.setText(infoText);
+		} else {
+			holder.info.setVisibility(View.GONE);
 		}
 	}
 
@@ -181,17 +193,14 @@ public final class QCNotificationAdapter extends RecyclerView.Adapter<QCNotifica
 		this.notifications = notifications;
 	}
 
-	public StatusBarNotification[] getNotifications() {
-		return notifications;
-	}
-
-	final class ViewHolder extends RecyclerView.ViewHolder {
+	class ViewHolder extends RecyclerView.ViewHolder {
 		private CardView card;
 		private View bigPictureFrame;
 		private ImageView bigPicture;
 		private TextView bigTitle;
 		private ImageView icon;
 		private TextView date;
+		private TextView info;
 		private TextView title;
 		private TextView text;
 		private View divider;
@@ -207,6 +216,7 @@ public final class QCNotificationAdapter extends RecyclerView.Adapter<QCNotifica
 			bigTitle = (TextView) card.findViewById(R.id.big_title);
 			icon = (ImageView) card.findViewById(R.id.icon);
 			date = (TextView) card.findViewById(R.id.date);
+			info = (TextView) card.findViewById(R.id.info);
 			title = (TextView) card.findViewById(R.id.title);
 			text = (TextView) card.findViewById(R.id.text);
 			divider = card.findViewById(R.id.divider);

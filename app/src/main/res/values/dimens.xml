@@ -1,5 +1,7 @@
 <resources>
 	<!-- Dimens for qc -->
+	<dimen name="qc_cover_height">1142px</dimen>
+	<dimen name="qc_cover_width">1100px</dimen>
 	<dimen name="qc_big_picture_height">128dp</dimen>
 	<dimen name="qc_big_title_max_height">112dp</dimen>
 	<dimen name="qc_icon_size">64dp</dimen>

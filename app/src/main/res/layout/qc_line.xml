@@ -39,6 +39,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_margin="@dimen/qc_default_margin"
+			android:baselineAligned="false"
 			android:orientation="horizontal">
 
 			<LinearLayout
@@ -50,8 +51,8 @@
 					android:id="@+id/icon"
 					android:layout_width="@dimen/qc_icon_size"
 					android:layout_height="@dimen/qc_icon_size"
-					android:scaleType="centerCrop"
-					android:background="@android:color/black" />
+					android:scaleType="centerInside"
+					android:background="@drawable/icon_background" />
 
 				<TextView
 					android:id="@+id/date"
@@ -61,6 +62,15 @@
 					android:textSize="@dimen/qc_default_text_size"
 					android:gravity="center_horizontal"
 					android:lines="1" />
+
+				<TextView
+					android:id="@+id/info"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/qc_default_margin"
+					android:textSize="@dimen/qc_default_text_size"
+					android:gravity="center_horizontal"
+					android:maxLines="2" />
 			</LinearLayout>
 
 			<LinearLayout
@@ -99,6 +109,7 @@
 				android:id="@+id/btn_1"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
+				style="?android:attr/buttonBarButtonStyle"
 				android:lines="1"
 				android:textSize="@dimen/qc_default_text_size" />
 
@@ -106,6 +117,7 @@
 				android:id="@+id/btn_2"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
+				style="?android:attr/buttonBarButtonStyle"
 				android:textSize="@dimen/qc_default_text_size"
 				android:lines="1" />
 		</LinearLayout>
