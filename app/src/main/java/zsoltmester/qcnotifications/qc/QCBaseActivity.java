@@ -128,6 +128,7 @@ class QCBaseActivity extends Activity {
 	}
 
 	private void setCircleLayoutParam(View view) {
+		// TODO something wrong with the height
 
 		final FrameLayout layout = (FrameLayout) view;
 		final RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) layout.getLayoutParams();

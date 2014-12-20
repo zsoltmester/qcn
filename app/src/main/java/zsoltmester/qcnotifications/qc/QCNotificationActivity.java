@@ -82,7 +82,7 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 			updatedNotifications = NotificationHelper.sortNotificationsByPriority(updatedNotifications);
 
 			if (adapter == null) {
-				adapter = new QCNotificationAdapter(updatedNotifications);
+				adapter = new QCNotificationAdapter(updatedNotifications, getResources());
 				notificationListView.setAdapter(adapter);
 			} else {
 				adapter.updateNotificationsArray(updatedNotifications);

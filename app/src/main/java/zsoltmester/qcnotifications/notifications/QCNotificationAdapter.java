@@ -29,9 +29,11 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d");
 
 	private StatusBarNotification[] notifications;
+	private Resources res;
 
-	public QCNotificationAdapter(StatusBarNotification[] notifications) {
+	public QCNotificationAdapter(StatusBarNotification[] notifications, Resources res) {
 		this.notifications = notifications;
+		this.res = res;
 	}
 
 	@Override
@@ -42,9 +44,72 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
+		// TODO split this to some method
+
+		initMargins(holder, position);
+
 		Bundle extras = notifications[position].getNotification().extras;
 
-		// big picture
+		boolean isBigPictureStyle = initBigPicture(holder, extras);
+
+		initTitle(holder, extras, isBigPictureStyle);
+
+		initText(holder, extras);
+
+		initButtons(holder, position);
+
+		initIcon(holder, position, extras);
+
+		initDate(holder, position);
+
+		initInfo(holder, position, extras);
+	}
+
+	private void initMargins(ViewHolder holder, int position) {
+		int topMargin;
+
+		// first element
+		if (position == 0) {
+			topMargin = res.getDimensionPixelSize(R.dimen.qc_first_card_top_margin);
+			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
+			lp.setMargins(
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					topMargin,
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					res.getDimensionPixelSize(R.dimen.qc_default_margin)
+			);
+		} else {
+			topMargin = 0;
+			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
+			lp.setMargins(
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					topMargin,
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					res.getDimensionPixelSize(R.dimen.qc_default_margin)
+			);
+		}
+
+		// last element
+		if (position == notifications.length - 1) {
+			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
+			lp.setMargins(
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					topMargin,
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					res.getDimensionPixelSize(R.dimen.qc_last_card_bottom_margin)
+			);
+		} else {
+			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
+			lp.setMargins(
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					topMargin,
+					res.getDimensionPixelSize(R.dimen.qc_card_margins),
+					res.getDimensionPixelSize(R.dimen.qc_default_margin)
+			);
+		}
+	}
+
+	private boolean initBigPicture(ViewHolder holder, Bundle extras) {
 		holder.bigPictureFrame.setVisibility(View.VISIBLE);
 		holder.bigPicture.setVisibility(View.VISIBLE);
 
@@ -52,19 +117,22 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 		if (bigPicture != null) {
 			holder.bigPicture.setImageBitmap(bigPicture);
+			return true;
 		} else {
 			holder.bigPictureFrame.setVisibility(View.GONE);
 			holder.bigPicture.setVisibility(View.GONE);
+			return false;
 		}
+	}
 
-		// title and big title
+	private void initTitle(ViewHolder holder, Bundle extras, boolean isBigPictureStyle) {
 		holder.bigTitle.setVisibility(View.VISIBLE);
 		holder.title.setVisibility(View.VISIBLE);
 
 		String bigTitle = extras.getString(Notification.EXTRA_TITLE_BIG);
 		String title = extras.getString(Notification.EXTRA_TITLE);
 
-		if (bigPicture != null) {
+		if (isBigPictureStyle) {
 			if (bigTitle != null) {
 				holder.bigTitle.setText(bigTitle);
 			} else if (title != null) {
@@ -83,8 +151,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 				holder.title.setVisibility(View.GONE);
 			}
 		}
+	}
 
-		// text
+	private void initText(ViewHolder holder, Bundle extras) {
 		// TODO lines don't appear in inbox style notification
 		holder.text.setVisibility(View.VISIBLE);
 		String newline = System.getProperty("line.separator");
@@ -119,8 +188,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		} else {
 			holder.text.setVisibility(View.GONE);
 		}
+	}
 
-		// buttons
+	private void initButtons(ViewHolder holder, int position) {
 		// TODO add +1 button
 		holder.buttonsFrame.setVisibility(View.GONE);
 		holder.btn1.setVisibility(View.GONE);
@@ -144,8 +214,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 					break;
 			}
 		}
+	}
 
-		// icon
+	private void initIcon(ViewHolder holder, int position, Bundle extras) {
 		holder.icon.setVisibility(View.VISIBLE);
 		holder.icon.setBackground(null);
 
@@ -178,8 +249,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 				holder.icon.setVisibility(View.GONE);
 			}
 		}
+	}
 
-		// date
+	private void initDate(ViewHolder holder, int position) {
 		Date date = new Date(notifications[position].getPostTime());
 
 		if (DateUtils.isToday(date.getTime())) {
@@ -187,8 +259,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		} else {
 			holder.date.setText(DATE_FORMAT.format(date));
 		}
+	}
 
-		// info
+	private void initInfo(ViewHolder holder, int position, Bundle extras) {
 		holder.info.setVisibility(View.VISIBLE);
 		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
 		if (infoText != null && !infoText.isEmpty()) {
