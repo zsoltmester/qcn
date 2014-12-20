@@ -67,7 +67,6 @@
 					android:id="@+id/info"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="@dimen/qc_default_margin"
 					android:textSize="@dimen/qc_default_text_size"
 					android:gravity="center_horizontal"
 					android:maxLines="2" />

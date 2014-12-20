@@ -85,27 +85,35 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		// text
-		// TODO lines don't appear in gmail notification
-		// TODO + newline at the end
+		// TODO lines don't appear in inbox style notification
 		holder.text.setVisibility(View.VISIBLE);
 		String newline = System.getProperty("line.separator");
 
 		String text = extras.getString(Notification.EXTRA_TEXT);
-		String subText = extras.getString(Notification.EXTRA_SUB_TEXT);
-		String summaryText = extras.getString(Notification.EXTRA_SUMMARY_TEXT);
+		String bigText = extras.getString(Notification.EXTRA_BIG_TEXT);
 		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 		String inboxText = "";
 		if (lines != null) {
 			for (CharSequence line : lines) {
-				inboxText += line + newline;
+				if (inboxText.isEmpty()) {
+					inboxText += line;
+				} else {
+					inboxText += newline + line;
+				}
 			}
 		}
+		String subText = extras.getString(Notification.EXTRA_SUB_TEXT);
 
 		String visibleText = "";
-		visibleText += text != null ? text + newline : "";
-		visibleText += !inboxText.isEmpty() ? inboxText + newline : "";
-		visibleText += summaryText != null ? summaryText : "";
-		visibleText += subText != null ? subText + newline : "";
+		visibleText += text != null ? text : "";
+		if ((text == null || text.isEmpty()) && bigText != null && !bigText.isEmpty()) {
+			visibleText = bigText;
+		} else if (visibleText.isEmpty()) {
+			visibleText = inboxText;
+		}
+
+		visibleText = subText != null ? visibleText.isEmpty() ? subText : visibleText + newline + subText : visibleText;
+
 		if (!visibleText.isEmpty()) {
 			holder.text.setText(visibleText);
 		} else {
@@ -113,6 +121,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		// buttons
+		// TODO add +1 button
 		holder.buttonsFrame.setVisibility(View.GONE);
 		holder.btn1.setVisibility(View.GONE);
 		holder.btn2.setVisibility(View.GONE);
@@ -137,21 +146,24 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		// icon
-		// TODO background issues
-		// TODO background color
 		holder.icon.setVisibility(View.VISIBLE);
+		holder.icon.setBackground(null);
 
 		Integer iconRes = notifications[position].getNotification().icon;
 		Bitmap smallIconBitmap = null;
 		Bitmap largeIconBitmap = null;
+		Bitmap bigLargeIconBitmap = null;
 		try {
 			smallIconBitmap = extras.getParcelable(Notification.EXTRA_SMALL_ICON);
 			largeIconBitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
+			bigLargeIconBitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG);
 		} catch (ClassCastException e) {
 			// Don't worry, I handle this with iconRes.
 		}
 
-		if (largeIconBitmap != null) {
+		if (bigLargeIconBitmap != null) {
+			holder.icon.setImageBitmap(bigLargeIconBitmap);
+		} else if (largeIconBitmap != null) {
 			holder.icon.setImageBitmap(largeIconBitmap);
 		} else if (smallIconBitmap != null) {
 			holder.icon.setImageBitmap(smallIconBitmap);
@@ -160,6 +172,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 				holder.icon.setImageDrawable(holder.card.getContext()
 						.createPackageContext(notifications[position].getPackageName(), 0).getResources()
 						.getDrawable(iconRes));
+				holder.icon.setBackgroundResource(R.drawable.icon_background);
 			} catch (PackageManager.NameNotFoundException | Resources.NotFoundException e) {
 				e.printStackTrace();
 				holder.icon.setVisibility(View.GONE);
@@ -176,11 +189,17 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		// info
+		holder.info.setVisibility(View.VISIBLE);
 		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
 		if (infoText != null && !infoText.isEmpty()) {
 			holder.info.setText(infoText);
 		} else {
-			holder.info.setVisibility(View.GONE);
+			int number = notifications[position].getNotification().number;
+			if (number > 0) {
+				holder.info.setText(Integer.toString(number));
+			} else {
+				holder.info.setVisibility(View.GONE);
+			}
 		}
 	}
 
