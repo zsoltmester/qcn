@@ -2,19 +2,22 @@ package zsoltmester.qcnotifications.notifications;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class NotificationHelper {
 
+	private static final String TAG = NotificationHelper.class.getSimpleName();
+
 	private static Comparator<StatusBarNotification> priorityComparator = new Comparator<StatusBarNotification>() {
-		// TODO ha a prio megegyezik akkor idő szerint
 		@Override
 		public int compare(StatusBarNotification lhs, StatusBarNotification rhs) {
-			return lhs.getNotification().priority - rhs.getNotification().priority;
+			return rhs.getNotification().priority - lhs.getNotification().priority;
 		}
 	};
 

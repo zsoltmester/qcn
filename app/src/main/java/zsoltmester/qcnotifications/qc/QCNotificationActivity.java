@@ -22,7 +22,7 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 
 	private StatusBarNotification[] notifications;
 
-	private RecyclerView notificationListView;
+	private RecyclerView rv;
 	private QCNotificationAdapter adapter;
 
 	@Override
@@ -40,10 +40,10 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
 
-		notificationListView = (RecyclerView) findViewById(R.id.notification_list);
+		rv = (RecyclerView) findViewById(R.id.notification_list);
 
 		RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-		notificationListView.setLayoutManager(layoutManager);
+		rv.setLayoutManager(layoutManager);
 
 		updateList();
 	}
@@ -72,22 +72,25 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	}
 
 	private void updateList() {
-		if (notifications != null && notifications.length > 0) {
-			StatusBarNotification[] updatedNotifications = NotificationHelper.selectNotNullNotifications(notifications);
 
-			if (updatedNotifications.length == 0) {
-				return;
-			}
+		if (notifications == null || notifications.length == 0) {
+			return;
+		}
 
-			updatedNotifications = NotificationHelper.sortNotificationsByPriority(updatedNotifications);
+		StatusBarNotification[] updatedNotifications = NotificationHelper.selectNotNullNotifications(notifications);
 
-			if (adapter == null) {
-				adapter = new QCNotificationAdapter(updatedNotifications, getResources());
-				notificationListView.setAdapter(adapter);
-			} else {
-				adapter.updateNotificationsArray(updatedNotifications);
-				adapter.notifyDataSetChanged();
-			}
+		if (updatedNotifications.length == 0) {
+			return;
+		}
+
+		updatedNotifications = NotificationHelper.sortNotificationsByPriority(updatedNotifications);
+
+		if (adapter == null) {
+			adapter = new QCNotificationAdapter(updatedNotifications, getResources());
+			rv.setAdapter(adapter);
+		} else {
+			adapter.updateNotificationsArray(updatedNotifications);
+			adapter.notifyDataSetChanged();
 		}
 	}
 }
