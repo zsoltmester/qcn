@@ -52,7 +52,7 @@
 					android:layout_width="@dimen/qc_icon_size"
 					android:layout_height="@dimen/qc_icon_size"
 					android:scaleType="centerInside"
-					android:background="@drawable/icon_background" />
+					android:background="@drawable/bg_icon" />
 
 				<TextView
 					android:id="@+id/date"

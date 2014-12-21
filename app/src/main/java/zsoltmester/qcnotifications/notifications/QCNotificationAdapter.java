@@ -239,7 +239,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 				holder.icon.setImageDrawable(holder.card.getContext()
 						.createPackageContext(notifications[position].getPackageName(), 0).getResources()
 						.getDrawable(iconRes));
-				holder.icon.setBackgroundResource(R.drawable.icon_background);
+				holder.icon.setBackgroundResource(R.drawable.bg_icon);
 			} catch (PackageManager.NameNotFoundException | Resources.NotFoundException e) {
 				e.printStackTrace();
 				holder.icon.setVisibility(View.GONE);

@@ -44,16 +44,12 @@ class QCBaseActivity extends Activity {
 		// TODO setTheme call here
 
 		setContentView(R.layout.activity_qc);
-		final View coverView = findViewById(R.id.cover);
+		View coverView = findViewById(R.id.cover);
 
 		applicationContext = getApplicationContext();
 		contentResolver = getContentResolver();
 
-		// Is this G3?
-		final String device = android.os.Build.DEVICE;
-		Log.d(TAG, "device:" + device);
-		isG3 = device.equals("g3") || device.equals("tiger6");
-		Log.d(TAG, "isG3:" + isG3);
+		checkDevice();
 
 		registerIntentReceiver();
 
@@ -63,6 +59,8 @@ class QCBaseActivity extends Activity {
 
 		// Crops a layout for the QuickCircle window
 		setCircleLayoutParam(coverView);
+
+		initBackBtn(coverView);
 	}
 
 	@Override
@@ -73,14 +71,21 @@ class QCBaseActivity extends Activity {
 		applicationContext.unregisterReceiver(intentReceiver);
 	}
 
+	private void checkDevice() {
+		String device = android.os.Build.DEVICE;
+		Log.d(TAG, "device:" + device);
+		isG3 = device.equals("g3") || device.equals("tiger6");
+		Log.d(TAG, "isG3:" + isG3);
+	}
+
 	private void registerIntentReceiver() {
-		final IntentFilter filter = new IntentFilter();
+		IntentFilter filter = new IntentFilter();
 		filter.addAction(ACTION_ACCESSORY_COVER_EVENT);
 		applicationContext.registerReceiver(intentReceiver, filter);
 	}
 
 	private void setWindowFlags() {
-		final Window window = getWindow();
+		Window window = getWindow();
 		if (window != null) {
 			window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
 					| WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -100,7 +105,7 @@ class QCBaseActivity extends Activity {
 		final String QUICKCOVERSETTINGS_QUICKCOVER_ENABLE = "quick_view_enable";
 
 		// Check the availability of the case
-		final boolean quickCircleEnabled =
+		boolean quickCircleEnabled =
 				Settings.Global.getInt(contentResolver, QUICKCOVERSETTINGS_QUICKCOVER_ENABLE, 0) == 0;
 		Log.d(TAG, "quickCircleEnabled:" + quickCircleEnabled);
 
@@ -128,10 +133,9 @@ class QCBaseActivity extends Activity {
 	}
 
 	private void setCircleLayoutParam(View view) {
-		// TODO something wrong with the height
 
-		final FrameLayout layout = (FrameLayout) view;
-		final RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) layout.getLayoutParams();
+		FrameLayout layout = (FrameLayout) view;
+		RelativeLayout.LayoutParams layoutParam = (RelativeLayout.LayoutParams) layout.getLayoutParams();
 
 		if (circleXpos < 0) {
 			layoutParam.leftMargin = circleXpos;
@@ -147,11 +151,20 @@ class QCBaseActivity extends Activity {
 		layout.setLayoutParams(layoutParam);
 	}
 
+	private void initBackBtn(View parent) {
+		parent.findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				QCBaseActivity.this.finish();
+			}
+		});
+	}
+
 	private final BroadcastReceiver intentReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			final String action = intent.getAction();
+			String action = intent.getAction();
 
 			if (action == null) {
 				return;
@@ -173,7 +186,7 @@ class QCBaseActivity extends Activity {
 			final int EXTRA_VALUE_ACCESSORY_COVER_CLOSED = 1;
 
 			// Gets the current state of the cover
-			final int quickCoverState =
+			int quickCoverState =
 					intent.getIntExtra(EXTRA_NAME_ACCESSORY_COVER_STATE, EXTRA_VALUE_ACCESSORY_COVER_OPENED);
 
 			Log.d(TAG, "quickCoverState:" + quickCoverState);
