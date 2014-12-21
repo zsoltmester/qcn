@@ -44,8 +44,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		// TODO split this to some method
-
 		initMargins(holder, position);
 
 		Bundle extras = notifications[position].getNotification().extras;
@@ -154,39 +152,44 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initText(ViewHolder holder, Bundle extras) {
-		// TODO lines don't appear in inbox style notification
 		holder.text.setVisibility(View.VISIBLE);
-		String newline = System.getProperty("line.separator");
+		String newLine = System.getProperty("line.separator");
 
 		String text = extras.getString(Notification.EXTRA_TEXT);
 		String bigText = extras.getString(Notification.EXTRA_BIG_TEXT);
-		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 		String inboxText = "";
-		if (lines != null) {
+		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+		if (lines != null && lines.length > 0) {
 			for (CharSequence line : lines) {
-				if (inboxText.isEmpty()) {
-					inboxText += line;
-				} else {
-					inboxText += newline + line;
-				}
+				inboxText = appendText(inboxText, newLine, line.toString());
 			}
 		}
+		String summaryText = extras.getString(Notification.EXTRA_SUMMARY_TEXT);
 		String subText = extras.getString(Notification.EXTRA_SUB_TEXT);
 
 		String visibleText = "";
-		visibleText += text != null ? text : "";
-		if ((text == null || text.isEmpty()) && bigText != null && !bigText.isEmpty()) {
+		if (bigText != null && !bigText.isEmpty()) {
 			visibleText = bigText;
-		} else if (visibleText.isEmpty()) {
-			visibleText = inboxText;
+		} else if (text != null && !text.isEmpty()) {
+			visibleText = text;
 		}
 
-		visibleText = subText != null ? visibleText.isEmpty() ? subText : visibleText + newline + subText : visibleText;
+		visibleText = appendText(visibleText, newLine, inboxText);
+		visibleText = appendText(visibleText, newLine, summaryText);
+		visibleText = appendText(visibleText, newLine, subText);
 
 		if (!visibleText.isEmpty()) {
 			holder.text.setText(visibleText);
 		} else {
 			holder.text.setVisibility(View.GONE);
+		}
+	}
+
+	private String appendText(String text, String newLine, String stringToAppend) {
+		if (stringToAppend != null && !stringToAppend.isEmpty()) {
+			return text.isEmpty() ? stringToAppend : text + newLine + stringToAppend;
+		} else {
+			return text;
 		}
 	}
 
@@ -221,23 +224,16 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		holder.icon.setBackground(null);
 
 		Integer iconRes = notifications[position].getNotification().icon;
-		Bitmap smallIconBitmap = null;
-		Bitmap largeIconBitmap = null;
-		Bitmap bigLargeIconBitmap = null;
-		try {
-			smallIconBitmap = extras.getParcelable(Notification.EXTRA_SMALL_ICON);
-			largeIconBitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
-			bigLargeIconBitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG);
-		} catch (ClassCastException e) {
-			// Don't worry, I handle this with iconRes.
-		}
+		Object smallIcon = extras.get(Notification.EXTRA_SMALL_ICON);
+		Object largeIcon = extras.get(Notification.EXTRA_LARGE_ICON);
+		Object bigLargeIcon = extras.get(Notification.EXTRA_LARGE_ICON_BIG);
 
-		if (bigLargeIconBitmap != null) {
-			holder.icon.setImageBitmap(bigLargeIconBitmap);
-		} else if (largeIconBitmap != null) {
-			holder.icon.setImageBitmap(largeIconBitmap);
-		} else if (smallIconBitmap != null) {
-			holder.icon.setImageBitmap(smallIconBitmap);
+		if (bigLargeIcon instanceof Bitmap) {
+			holder.icon.setImageBitmap((Bitmap) bigLargeIcon);
+		} else if (largeIcon instanceof Bitmap) {
+			holder.icon.setImageBitmap((Bitmap) largeIcon);
+		} else if (smallIcon instanceof  Bitmap) {
+			holder.icon.setImageBitmap((Bitmap) smallIcon);
 		} else {
 			try {
 				holder.icon.setImageDrawable(holder.card.getContext()
