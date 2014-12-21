@@ -54,8 +54,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 		initText(holder, extras);
 
-		initButtons(holder, position);
-
 		initIcon(holder, position, extras);
 
 		initDate(holder, position);
@@ -152,6 +150,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initText(ViewHolder holder, Bundle extras) {
+		// TODO something wrong with fb notifications (maybe text + inbox)
 		holder.text.setVisibility(View.VISIBLE);
 		String newLine = System.getProperty("line.separator");
 
@@ -190,32 +189,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			return text.isEmpty() ? stringToAppend : text + newLine + stringToAppend;
 		} else {
 			return text;
-		}
-	}
-
-	private void initButtons(ViewHolder holder, int position) {
-		// TODO add +1 button
-		holder.buttonsFrame.setVisibility(View.GONE);
-		holder.btn1.setVisibility(View.GONE);
-		holder.btn2.setVisibility(View.GONE);
-		holder.divider.setVisibility(View.GONE);
-
-		final Notification.Action[] actions = notifications[position].getNotification().actions;
-
-		if (actions != null && actions.length > 0) {
-			switch (actions.length) {
-				case 2:
-					holder.btn2.setVisibility(View.VISIBLE);
-					holder.btn2.setText(actions[1].title);
-					// TODO perform action
-				case 1:
-					holder.buttonsFrame.setVisibility(View.VISIBLE);
-					holder.divider.setVisibility(View.VISIBLE);
-					holder.btn1.setVisibility(View.VISIBLE);
-					holder.btn1.setText(actions[0].title);
-					// TODO perform action
-					break;
-			}
 		}
 	}
 
@@ -291,10 +264,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		private TextView info;
 		private TextView title;
 		private TextView text;
-		private View divider;
-		private View buttonsFrame;
-		private Button btn1;
-		private Button btn2;
 
 		private ViewHolder(CardView card) {
 			super(card);
@@ -307,10 +276,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			info = (TextView) card.findViewById(R.id.info);
 			title = (TextView) card.findViewById(R.id.title);
 			text = (TextView) card.findViewById(R.id.text);
-			divider = card.findViewById(R.id.divider);
-			buttonsFrame = card.findViewById(R.id.buttons_frame);
-			btn1 = (Button) card.findViewById(R.id.btn_1);
-			btn2 = (Button) card.findViewById(R.id.btn_2);
 		}
 	}
 }

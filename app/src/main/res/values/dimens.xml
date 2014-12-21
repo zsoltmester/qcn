@@ -5,7 +5,6 @@
 	<dimen name="qc_big_title_max_height">112dp</dimen>
 	<dimen name="qc_icon_size">64dp</dimen>
 	<dimen name="qc_back_btn_size">56dp</dimen>
-	<dimen name="qc_buttons_height">48dp</dimen>
 	<dimen name="qc_last_card_bottom_margin">48dp</dimen>
 	<dimen name="qc_first_card_top_margin">48dp</dimen>
 	<dimen name="qc_card_margins">32dp</dimen>

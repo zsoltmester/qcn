@@ -11,6 +11,7 @@ import java.util.List;
 public class NotificationHelper {
 
 	private static Comparator<StatusBarNotification> priorityComparator = new Comparator<StatusBarNotification>() {
+		// TODO ha a prio megegyezik akkor idő szerint
 		@Override
 		public int compare(StatusBarNotification lhs, StatusBarNotification rhs) {
 			return lhs.getNotification().priority - rhs.getNotification().priority;

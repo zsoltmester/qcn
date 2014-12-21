@@ -92,33 +92,5 @@
 					android:textSize="@dimen/qc_default_text_size" />
 			</LinearLayout>
 		</LinearLayout>
-
-		<View
-			android:id="@+id/divider"
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:background="@android:color/black" />
-
-		<LinearLayout
-			android:id="@+id/buttons_frame"
-			android:layout_width="match_parent"
-			android:layout_height="@dimen/qc_buttons_height">
-
-			<Button
-				android:id="@+id/btn_1"
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				style="?android:attr/buttonBarButtonStyle"
-				android:lines="1"
-				android:textSize="@dimen/qc_default_text_size" />
-
-			<Button
-				android:id="@+id/btn_2"
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				style="?android:attr/buttonBarButtonStyle"
-				android:textSize="@dimen/qc_default_text_size"
-				android:lines="1" />
-		</LinearLayout>
 	</LinearLayout>
 </android.support.v7.widget.CardView>
