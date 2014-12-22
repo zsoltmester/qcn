@@ -15,6 +15,7 @@ public class QCNotificationListener extends NotificationListenerService {
 			"zsoltmester.qcnotifications.notifications.NOTIFICATION_LISTENER";
 
 	private IBinder binder = new QCNotificationBinder();
+	private Callback cb;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -25,12 +26,27 @@ public class QCNotificationListener extends NotificationListenerService {
 
 	@Override
 	public void onNotificationPosted(StatusBarNotification sbn) {
-		// TODO refresh
+		Log.d(TAG, "onNotificationPosted");
+		if (cb != null) {
+			cb.onNotificationPosted(sbn);
+		}
 	}
 
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
-		// TODO delete
+		Log.d(TAG, "onNotificationRemoved");
+		if (cb != null) {
+			cb.onNotificationRemoved(sbn);
+		}
+	}
+
+	public void setCallback(Callback cb) {
+		this.cb = cb;
+	}
+
+	public interface Callback {
+		void onNotificationPosted(StatusBarNotification sbn);
+		void onNotificationRemoved(StatusBarNotification sbn);
 	}
 
 	/**
@@ -42,7 +58,7 @@ public class QCNotificationListener extends NotificationListenerService {
 		 * @return The running {@link QCNotificationListener} service instance.
 		 */
 		public QCNotificationListener getService() {
-			 return QCNotificationListener.this;
-		 }
+			return QCNotificationListener.this;
+		}
 	}
 }

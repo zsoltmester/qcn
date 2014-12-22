@@ -33,11 +33,11 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	private static final SimpleDateFormat TODAY_FORMAT = new SimpleDateFormat("HH:mm");
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d");
 
-	private StatusBarNotification[] notifications;
+	private List<StatusBarNotification> nfs;
 	private Resources res;
 
-	public QCNotificationAdapter(StatusBarNotification[] notifications, Resources res) {
-		this.notifications = notifications;
+	public QCNotificationAdapter(List<StatusBarNotification> nfs, Resources res) {
+		this.nfs = nfs;
 		this.res = res;
 	}
 
@@ -51,7 +51,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	public void onBindViewHolder(ViewHolder holder, int position) {
 		initMargins(holder, position);
 
-		Bundle extras = notifications[position].getNotification().extras;
+		Bundle extras = nfs.get(position).getNotification().extras;
 
 		boolean isBigPictureStyle = initBigPicture(holder, extras);
 
@@ -91,7 +91,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		// last element
-		if (position == notifications.length - 1) {
+		if (position == nfs.size() - 1) {
 			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
 			lp.setMargins(
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
@@ -155,7 +155,8 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initText(ViewHolder holder, Bundle extras) {
-		// TODO something wrong with fb notifications (maybe text + inbox)
+		// TODO something wrong with fb notifications (maybe text + inbox), DONE: need some test
+		// TODO add newline after text and after lines and after sub
 		holder.text.setVisibility(View.VISIBLE);
 		String newLine = System.getProperty("line.separator");
 
@@ -257,7 +258,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		holder.icon.setVisibility(View.VISIBLE);
 		holder.icon.setBackground(null);
 
-		Integer iconRes = notifications[position].getNotification().icon;
+		Integer iconRes = nfs.get(position).getNotification().icon;
 		Object smallIcon = extras.get(Notification.EXTRA_SMALL_ICON);
 		Object largeIcon = extras.get(Notification.EXTRA_LARGE_ICON);
 		Object bigLargeIcon = extras.get(Notification.EXTRA_LARGE_ICON_BIG);
@@ -271,7 +272,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		} else {
 			try {
 				holder.icon.setImageDrawable(holder.card.getContext()
-						.createPackageContext(notifications[position].getPackageName(), 0).getResources()
+						.createPackageContext(nfs.get(position).getPackageName(), 0).getResources()
 						.getDrawable(iconRes));
 				holder.icon.setBackgroundResource(R.drawable.bg_icon);
 			} catch (PackageManager.NameNotFoundException | Resources.NotFoundException e) {
@@ -282,7 +283,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initDate(ViewHolder holder, int position) {
-		Date date = new Date(notifications[position].getPostTime());
+		Date date = new Date(nfs.get(position).getPostTime());
 
 		if (DateUtils.isToday(date.getTime())) {
 			holder.date.setText(TODAY_FORMAT.format(date));
@@ -297,7 +298,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		if (infoText != null && !infoText.isEmpty()) {
 			holder.info.setText(infoText);
 		} else {
-			int number = notifications[position].getNotification().number;
+			int number = nfs.get(position).getNotification().number;
 			if (number > 0) {
 				holder.info.setText(Integer.toString(number));
 			} else {
@@ -308,11 +309,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 	@Override
 	public int getItemCount() {
-		return notifications != null ? notifications.length : 0;
-	}
-
-	public void updateNotificationsArray(StatusBarNotification[] notifications) {
-		this.notifications = notifications;
+		return nfs != null ? nfs.size() : 0;
 	}
 
 	class ViewHolder extends RecyclerView.ViewHolder {

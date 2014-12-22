@@ -164,6 +164,8 @@ class QCBaseActivity extends Activity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "onReceive");
+
 			String action = intent.getAction();
 
 			if (action == null) {

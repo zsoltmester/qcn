@@ -2,12 +2,10 @@ package zsoltmester.qcnotifications.notifications;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class NotificationHelper {
@@ -21,20 +19,20 @@ public class NotificationHelper {
 		}
 	};
 
-	public static StatusBarNotification[] sortNotificationsByPriority(StatusBarNotification[] notifications) {
-		Arrays.sort(notifications, priorityComparator);
-		return notifications;
+	public static void sortNotificationsByPriority(List<StatusBarNotification> nfs) {
+		Collections.sort(nfs, priorityComparator);
 	}
 
-	public static StatusBarNotification[] selectNotNullNotifications(StatusBarNotification[] notifications) {
-		List<StatusBarNotification> selectedNotifications = new ArrayList<>();
-		for (StatusBarNotification notification : notifications) {
-			String title = notification.getNotification().extras.getString(Notification.EXTRA_TITLE);
-			if (title != null && !title.isEmpty()) {
-				selectedNotifications.add(notification);
+	public static void selectNotNullNotifications(List<StatusBarNotification> nfs) {
+		synchronized (nfs) {
+			Iterator i = nfs.iterator();
+			while (i.hasNext()) {
+				// TODO it's enough for check if it is valid?
+				if (((StatusBarNotification) i.next()).getNotification().extras
+						.getCharSequence(Notification.EXTRA_TITLE) == null) {
+					i.remove();
+				}
 			}
 		}
-
-		return selectedNotifications.toArray(new StatusBarNotification[selectedNotifications.size()]);
 	}
 }
