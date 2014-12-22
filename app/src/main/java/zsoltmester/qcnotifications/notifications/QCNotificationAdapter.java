@@ -8,16 +8,21 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import zsoltmester.qcnotifications.R;
 
@@ -154,26 +159,52 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		holder.text.setVisibility(View.VISIBLE);
 		String newLine = System.getProperty("line.separator");
 
-		String text = extras.getString(Notification.EXTRA_TEXT);
-		String bigText = extras.getString(Notification.EXTRA_BIG_TEXT);
+		String text = "";
+		List<String> textSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TEXT));
+		for (String textPiece : textSss) {
+			text += textPiece;
+		}
+
+		String bigText = "";
+		List<String> bigTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TEXT));
+		for (String textPiece : bigTextSss) {
+			bigText += textPiece;
+		}
+
 		String inboxText = "";
 		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 		if (lines != null && lines.length > 0) {
 			for (CharSequence line : lines) {
-				inboxText = appendText(inboxText, newLine, line.toString());
+				List<String> lineSss = extractSpannedStrings(line);
+				for (String textPiece : lineSss) {
+					inboxText += textPiece;
+				}
 			}
 		}
-		String summaryText = extras.getString(Notification.EXTRA_SUMMARY_TEXT);
-		String subText = extras.getString(Notification.EXTRA_SUB_TEXT);
 
-		String visibleText = "";
-		if (bigText != null && !bigText.isEmpty()) {
-			visibleText = bigText;
-		} else if (text != null && !text.isEmpty()) {
-			visibleText = text;
+		String summaryText = "";
+		List<String> summaryTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT));
+		for (String textPiece : summaryTextSss) {
+			summaryText += textPiece;
 		}
 
+		String subText = "";
+		List<String> subTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUB_TEXT));
+		for (String textPiece : subTextSss) {
+			subText += textPiece;
+		}
+
+		String visibleText = "";
 		visibleText = appendText(visibleText, newLine, inboxText);
+
+		if (visibleText.isEmpty()) {
+			if (!bigText.isEmpty()) {
+				visibleText = bigText;
+			} else if (!text.isEmpty()) {
+				visibleText = text;
+			}
+		}
+
 		visibleText = appendText(visibleText, newLine, summaryText);
 		visibleText = appendText(visibleText, newLine, subText);
 
@@ -182,6 +213,36 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		} else {
 			holder.text.setVisibility(View.GONE);
 		}
+	}
+
+	private List<String> extractSpannedStrings(CharSequence charSequence) {
+		// This is a google's sample code from:
+		// https://gitorious.org/cyandreamproject/android_frameworks_base/source/27ccc880ccde614deba4df9bb97a4ccf2afc359a:core/java/com/android/internal/notification/DemoContactNotificationScorer.java#Lundefined
+
+		if (charSequence == null) {
+			return Collections.emptyList();
+		}
+
+		if (!(charSequence instanceof SpannableString)) {
+			return Arrays.asList(charSequence.toString());
+		}
+
+		SpannableString spannableString = (SpannableString) charSequence;
+
+		// get all spans
+		Object[] ssArr = spannableString.getSpans(0, spannableString.length(), Object.class);
+
+		// spanned string sequences
+		ArrayList<String> sss = new ArrayList<>();
+		for (Object spanObj : ssArr) {
+			try {
+				sss.add(spannableString.subSequence(spannableString.getSpanStart(spanObj),
+						spannableString.getSpanEnd(spanObj)).toString());
+			} catch (StringIndexOutOfBoundsException e) {
+				Log.e(TAG, "Bad indices when extracting spanned subsequence", e);
+			}
+		}
+		return sss;
 	}
 
 	private String appendText(String text, String newLine, String stringToAppend) {
@@ -205,7 +266,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			holder.icon.setImageBitmap((Bitmap) bigLargeIcon);
 		} else if (largeIcon instanceof Bitmap) {
 			holder.icon.setImageBitmap((Bitmap) largeIcon);
-		} else if (smallIcon instanceof  Bitmap) {
+		} else if (smallIcon instanceof Bitmap) {
 			holder.icon.setImageBitmap((Bitmap) smallIcon);
 		} else {
 			try {
