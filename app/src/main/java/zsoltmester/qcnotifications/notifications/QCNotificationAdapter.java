@@ -157,8 +157,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initText(ViewHolder holder, Bundle extras) {
-		// TODO something wrong with fb notifications (maybe text + inbox), DONE: need some test
-		// TODO add newline after text and after lines and after sub
 		holder.text.setVisibility(View.VISIBLE);
 		String newLine = System.getProperty("line.separator");
 
@@ -180,7 +178,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			for (CharSequence line : lines) {
 				List<String> lineSss = extractSpannedStrings(line);
 				for (String textPiece : lineSss) {
-					inboxText += textPiece;
+					inboxText += textPiece + newLine;
 				}
 			}
 		}
@@ -202,9 +200,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 		if (visibleText.isEmpty()) {
 			if (!bigText.isEmpty()) {
-				visibleText = bigText;
+				visibleText = bigText + newLine;
 			} else if (!text.isEmpty()) {
-				visibleText = text;
+				visibleText = text + newLine;
 			}
 		}
 

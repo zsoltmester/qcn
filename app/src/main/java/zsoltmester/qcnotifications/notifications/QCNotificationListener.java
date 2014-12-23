@@ -25,18 +25,26 @@ public class QCNotificationListener extends NotificationListenerService {
 	}
 
 	@Override
-	public void onNotificationPosted(StatusBarNotification sbn) {
-		Log.d(TAG, "onNotificationPosted");
+	public void onNotificationRemoved(StatusBarNotification sbn, RankingMap rankingMap) {
+		Log.d(TAG, "onNotificationRemoved");
 		if (cb != null) {
-			cb.onNotificationPosted(sbn);
+			cb.onNotificationRemoved(sbn, rankingMap.getOrderedKeys());
 		}
 	}
 
 	@Override
-	public void onNotificationRemoved(StatusBarNotification sbn) {
-		Log.d(TAG, "onNotificationRemoved");
+	public void onNotificationPosted(StatusBarNotification sbn, RankingMap rankingMap) {
+		Log.d(TAG, "onNotificationPosted");
 		if (cb != null) {
-			cb.onNotificationRemoved(sbn);
+			cb.onNotificationPosted(sbn, rankingMap.getOrderedKeys());
+		}
+	}
+
+	@Override
+	public void onNotificationRankingUpdate(RankingMap rankingMap) {
+		Log.d(TAG, "onNotificationRankingUpdate");
+		if (cb != null) {
+			cb.onNotificationRankingUpdate(rankingMap.getOrderedKeys());
 		}
 	}
 
@@ -45,8 +53,11 @@ public class QCNotificationListener extends NotificationListenerService {
 	}
 
 	public interface Callback {
-		void onNotificationPosted(StatusBarNotification sbn);
-		void onNotificationRemoved(StatusBarNotification sbn);
+		void onNotificationPosted(StatusBarNotification sbn, String[] rm);
+
+		void onNotificationRemoved(StatusBarNotification sbn, String[] rm);
+
+		void onNotificationRankingUpdate(String[] rm);
 	}
 
 	/**

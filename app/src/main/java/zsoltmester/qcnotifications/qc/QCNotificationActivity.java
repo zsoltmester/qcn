@@ -1,6 +1,5 @@
 package zsoltmester.qcnotifications.qc;
 
-import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -80,12 +79,11 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	}
 
 	@Override
-	public void onNotificationPosted(StatusBarNotification sbn) {
+	public void onNotificationPosted(StatusBarNotification sbn, String[] rm) {
 		Log.d(TAG, "onNotificationPosted");
 
-		// TODO move the check for the helper.
-		if (sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE) != null) {
-			NotificationHelper.insertNotification(nfs, sbn);
+		if (NotificationHelper.isDisplayable(sbn)) {
+			NotificationHelper.insertNotification(nfs, sbn, rm);
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -96,10 +94,11 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	}
 
 	@Override
-	public void onNotificationRemoved(StatusBarNotification sbn) {
+	public void onNotificationRemoved(StatusBarNotification sbn, String[] rm) {
 		Log.d(TAG, "onNotificationRemoved");
 
-		NotificationHelper.deleteNotification(nfs, sbn);
+		NotificationHelper.deleteNotification(nfs, sbn, rm);
+
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -108,11 +107,26 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 		});
 	}
 
+	@Override
+	public void onNotificationRankingUpdate(String[] rm) {
+		Log.d(TAG, "onNotificationRankingUpdate");
+
+		NotificationHelper.sortNotifications(nfs, rm);
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				adapter.notifyDataSetChanged();
+			}
+		});
+
+	}
+
 	/**
 	 * Init the list, run only once.
 	 */
 	private void initList() {
-		// TODO more gmail notification appear instead of 1.
+		// TODO more gmail notification init instead of 1.
 
 		nfs.addAll(Arrays.asList(nl.getActiveNotifications()));
 
