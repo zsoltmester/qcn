@@ -129,6 +129,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initTitle(ViewHolder holder, Bundle extras, boolean isBigPictureStyle) {
+		// TODO improve this with spannable string support
 		holder.bigTitle.setVisibility(View.VISIBLE);
 		holder.title.setVisibility(View.VISIBLE);
 
@@ -157,6 +158,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initText(ViewHolder holder, Bundle extras) {
+		// TODO improve this with stringbuilder
 		holder.text.setVisibility(View.VISIBLE);
 		String newLine = System.getProperty("line.separator");
 
@@ -181,6 +183,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 					inboxText += textPiece + newLine;
 				}
 			}
+			inboxText = inboxText.substring(0, inboxText.lastIndexOf(newLine));
 		}
 
 		String summaryText = "";
@@ -200,13 +203,18 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 		if (visibleText.isEmpty()) {
 			if (!bigText.isEmpty()) {
-				visibleText = bigText + newLine;
+				visibleText = bigText;
 			} else if (!text.isEmpty()) {
-				visibleText = text + newLine;
+				visibleText = text ;
 			}
 		}
 
 		visibleText = appendText(visibleText, newLine, summaryText);
+
+		if (!subText.isEmpty()) {
+			visibleText += newLine;
+		}
+
 		visibleText = appendText(visibleText, newLine, subText);
 
 		if (!visibleText.isEmpty()) {
@@ -293,6 +301,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initInfo(ViewHolder holder, int position, Bundle extras) {
+		// TODO improve this with spannable string support
 		holder.info.setVisibility(View.VISIBLE);
 		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
 		if (infoText != null && !infoText.isEmpty()) {
