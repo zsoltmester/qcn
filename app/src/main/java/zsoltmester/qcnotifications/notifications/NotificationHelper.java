@@ -42,25 +42,17 @@ public class NotificationHelper {
 
 	// TODO @SuppressWarnings("")
 	public static void insertNotification(List<StatusBarNotification> nfs, StatusBarNotification sbn, String[] rm) {
-		// TODO insert based on the ranking map
 		synchronized (nfs) {
 			ListIterator i = nfs.listIterator();
 			while (i.hasNext()) {
-				// current sbn
-				StatusBarNotification csbn = (StatusBarNotification) i.next();
+				StatusBarNotification csbn = (StatusBarNotification) i.next(); // current sbn
 				if (csbn.getId() == sbn.getId()) {
 					i.set(sbn);
 					return;
-				} else if (csbn.getNotification().priority <= sbn.getNotification().priority) {
-					break;
 				}
 			}
 
-			if (i.hasNext()) {
-				i.add(sbn);
-			} else {
-				nfs.add(sbn);
-			}
+			nfs.add(getRank(sbn, rm), sbn);
 		}
 
 		sortNotifications(nfs, rm);
@@ -81,6 +73,17 @@ public class NotificationHelper {
 		sortNotifications(nfs, rm);
 	}
 
+	private static int getRank(StatusBarNotification sbn, String[] rm) {
+		for (int j = 0; j < rm.length; ++j) {
+			if (rm[j].equals(sbn.getKey())) {
+				return j;
+			}
+		}
+
+		// it's bad, if it's really get called, but it won't
+		return Integer.MIN_VALUE;
+	}
+
 	private static class Sorter implements Comparator<StatusBarNotification> {
 
 		private String[] rm;
@@ -91,18 +94,7 @@ public class NotificationHelper {
 
 		@Override
 		public int compare(StatusBarNotification lhs, StatusBarNotification rhs) {
-			return getRank(lhs) - getRank(rhs);
-		}
-
-		private int getRank(StatusBarNotification sbn) {
-			for (int j = 0; j < rm.length; ++j) {
-				if (rm[j].equals(sbn.getKey())) {
-					return j;
-				}
-			}
-
-			// it's bad, if it's really get called, but it won't
-			return Integer.MIN_VALUE;
+			return getRank(lhs, rm) - getRank(rhs, rm);
 		}
 	}
 }

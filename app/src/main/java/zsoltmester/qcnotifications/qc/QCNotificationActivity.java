@@ -119,7 +119,6 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 				adapter.notifyDataSetChanged();
 			}
 		});
-
 	}
 
 	/**
