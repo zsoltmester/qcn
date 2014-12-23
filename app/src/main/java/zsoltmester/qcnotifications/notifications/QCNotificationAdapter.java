@@ -33,7 +33,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	private static final SimpleDateFormat TODAY_FORMAT = new SimpleDateFormat("HH:mm");
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d");
 
-	private List<StatusBarNotification> nfs;
+	private final List<StatusBarNotification> nfs;
 	private Resources res;
 
 	public QCNotificationAdapter(List<StatusBarNotification> nfs, Resources res) {
@@ -49,21 +49,23 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		initMargins(holder, position);
+		synchronized (nfs) {
+			initMargins(holder, position);
 
-		Bundle extras = nfs.get(position).getNotification().extras;
+			Bundle extras = nfs.get(position).getNotification().extras;
 
-		boolean isBigPictureStyle = initBigPicture(holder, extras);
+			boolean isBigPictureStyle = initBigPicture(holder, extras);
 
-		initTitle(holder, extras, isBigPictureStyle);
+			initTitle(holder, extras, isBigPictureStyle);
 
-		initText(holder, extras);
+			initText(holder, extras);
 
-		initIcon(holder, position, extras);
+			initIcon(holder, position, extras);
 
-		initDate(holder, position);
+			initDate(holder, position);
 
-		initInfo(holder, position, extras);
+			initInfo(holder, position, extras);
+		}
 	}
 
 	private void initMargins(ViewHolder holder, int position) {

@@ -1,5 +1,6 @@
 package zsoltmester.qcnotifications.qc;
 
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -25,12 +26,10 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 		QCNotificationListener.Callback {
 	private final String TAG = QCNotificationActivity.class.getSimpleName();
 
-	private List<StatusBarNotification> nfs =
+	private final List<StatusBarNotification> nfs =
 			Collections.synchronizedList(new LinkedList<StatusBarNotification>());
-
-	private RecyclerView rv;
+	private QCNotificationListener nl;
 	private QCNotificationAdapter adapter;
-	private boolean isListAlreadyInit;
 
 	@Override
 	protected void onStart() {
@@ -47,14 +46,15 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
 
-		rv = (RecyclerView) findViewById(R.id.notification_list);
+		RecyclerView rv = (RecyclerView) findViewById(R.id.notification_list);
 
 		RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 		rv.setLayoutManager(layoutManager);
 
-		// TODO maybe init the adapter here?
+		adapter = new QCNotificationAdapter(nfs, getResources());
+		rv.setAdapter(adapter);
 
-		initList();
+		// TODO set animator for recycle view
 	}
 
 	@Override
@@ -68,11 +68,8 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		Log.d(TAG, "onServiceConnected");
-		QCNotificationListener listener = ((QCNotificationBinder) service).getService();
 
-		// TODO in AsyncTask
-		nfs.addAll(Arrays.asList(listener.getActiveNotifications()));
-		listener.setCallback(this);
+		nl = ((QCNotificationBinder) service).getService();
 
 		initList();
 	}
@@ -85,40 +82,55 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	@Override
 	public void onNotificationPosted(StatusBarNotification sbn) {
 		Log.d(TAG, "onNotificationPosted");
-		Log.d(TAG, sbn.getPackageName());
+
+		// TODO move the check for the helper.
+		if (sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE) != null) {
+			NotificationHelper.insertNotification(nfs, sbn);
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					adapter.notifyDataSetChanged();
+				}
+			});
+		}
 	}
 
 	@Override
 	public void onNotificationRemoved(StatusBarNotification sbn) {
 		Log.d(TAG, "onNotificationRemoved");
-		Log.d(TAG, sbn.getPackageName());
+
+		NotificationHelper.deleteNotification(nfs, sbn);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				adapter.notifyDataSetChanged();
+			}
+		});
 	}
 
 	/**
 	 * Init the list, run only once.
 	 */
 	private void initList() {
-		// TODO 3 gmail notification appear instead of 1. Maybe CATEGORY?
+		// TODO more gmail notification appear instead of 1.
 
-		if (rv == null || nfs.size() == 0) {
-			return;
-		}
-
-		if (isListAlreadyInit) {
-			return;
-		}
-
-		isListAlreadyInit = true;
-
-		NotificationHelper.selectNotNullNotifications(nfs);
+		nfs.addAll(Arrays.asList(nl.getActiveNotifications()));
 
 		if (nfs.size() == 0) {
 			return;
 		}
 
-		NotificationHelper.sortNotificationsByPriority(nfs);
+		NotificationHelper.selectValidNotifications(nfs);
 
-		adapter = new QCNotificationAdapter(nfs, getResources());
-		rv.setAdapter(adapter);
+		if (nfs.size() == 0) {
+			return;
+		}
+
+		String[] rm = nl.getCurrentRanking().getOrderedKeys();
+		NotificationHelper.sortNotifications(nfs, rm);
+
+		adapter.notifyDataSetChanged();
+
+		nl.setCallback(this);
 	}
 }
