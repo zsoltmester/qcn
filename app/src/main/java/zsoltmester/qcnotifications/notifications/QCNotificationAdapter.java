@@ -136,14 +136,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 		StringBuilder sb = new StringBuilder();
 
-		List<String> bigTitleSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TITLE_BIG));
-		for (String textPiece : bigTitleSss) {
-			if (sb.length() > 0) {
-				sb.append(newLine).append(textPiece);
-			} else {
-				sb.append(textPiece);
-			}
-		}
+		appendText(sb, newLine, extras, Notification.EXTRA_TITLE_BIG);
 
 		if (sb.length() > 0) {
 			if (isBigPictureStyle) {
@@ -157,14 +150,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			return;
 		}
 
-		List<String> titleSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TITLE));
-		for (String textPiece : titleSss) {
-			if (sb.length() > 0) {
-				sb.append(newLine).append(textPiece);
-			} else {
-				sb.append(textPiece);
-			}
-		}
+		appendText(sb, newLine, extras, Notification.EXTRA_TITLE);
 
 		if (sb.length() > 0) {
 			if (isBigPictureStyle) {
@@ -197,27 +183,14 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		if (sb.length() == 0) {
-			List<String> bigTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_BIG_TEXT));
-			for (String textPiece : bigTextSss) {
-				sb.append(textPiece);
-			}
+			appendText(sb, newLine, extras, Notification.EXTRA_BIG_TEXT);
 
 			if (sb.length() == 0) {
-				List<String> textSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TEXT));
-				for (String textPiece : textSss) {
-					sb.append(textPiece);
-				}
+				appendText(sb, newLine, extras, Notification.EXTRA_TEXT);
 			}
 		}
 
-		List<String> summaryTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT));
-		for (String textPiece : summaryTextSss) {
-			if (sb.length() > 0) {
-				sb.append(newLine).append(textPiece);
-			} else {
-				sb.append(textPiece);
-			}
-		}
+		appendText(sb, newLine, extras, Notification.EXTRA_SUMMARY_TEXT);
 
 		List<String> subTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUB_TEXT));
 		if (subTextSss.size() > 0) {
@@ -281,14 +254,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 		StringBuilder sb = new StringBuilder();
 
-		List<String> infoSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_INFO_TEXT));
-		for (String textPiece : infoSss) {
-			if (sb.length() > 0) {
-				sb.append(newLine).append(textPiece);
-			} else {
-				sb.append(textPiece);
-			}
-		}
+		appendText(sb, newLine, extras, Notification.EXTRA_INFO_TEXT);
 
 		if (sb.length() == 0) {
 			int number = nfs.get(position).getNotification().number;
@@ -332,6 +298,17 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			}
 		}
 		return sss;
+	}
+
+	private void appendText(StringBuilder sb, String newLine, Bundle extras, String res) {
+		List<String> sss = extractSpannedStrings(extras.getCharSequence(res));
+		for (String textPiece : sss) {
+			if (sb.length() > 0) {
+				sb.append(newLine).append(textPiece);
+			} else {
+				sb.append(textPiece);
+			}
+		}
 	}
 
 	@Override
