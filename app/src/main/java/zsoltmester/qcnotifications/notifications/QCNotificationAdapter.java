@@ -56,15 +56,17 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 			boolean isBigPictureStyle = initBigPicture(holder, extras);
 
-			initTitle(holder, extras, isBigPictureStyle);
+			String newLine = System.getProperty("line.separator");
 
-			initText(holder, extras);
+			initTitle(holder, extras, isBigPictureStyle, newLine);
+
+			initText(holder, extras, newLine);
 
 			initIcon(holder, position, extras);
 
 			initDate(holder, position);
 
-			initInfo(holder, position, extras);
+			initInfo(holder, position, extras, newLine);
 		}
 	}
 
@@ -128,40 +130,57 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 	}
 
-	private void initTitle(ViewHolder holder, Bundle extras, boolean isBigPictureStyle) {
-		// TODO improve this with spannable string support and sb
+	private void initTitle(ViewHolder holder, Bundle extras, boolean isBigPictureStyle, String newLine) {
 		holder.bigTitle.setVisibility(View.VISIBLE);
 		holder.title.setVisibility(View.VISIBLE);
 
-		String bigTitle = extras.getString(Notification.EXTRA_TITLE_BIG);
-		String title = extras.getString(Notification.EXTRA_TITLE);
+		StringBuilder sb = new StringBuilder();
 
-		if (isBigPictureStyle) {
-			if (bigTitle != null) {
-				holder.bigTitle.setText(bigTitle);
-			} else if (title != null) {
-				holder.bigTitle.setText(title);
+		List<String> bigTitleSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TITLE_BIG));
+		for (String textPiece : bigTitleSss) {
+			if (sb.length() > 0) {
+				sb.append(newLine).append(textPiece);
 			} else {
+				sb.append(textPiece);
+			}
+		}
+
+		if (sb.length() > 0) {
+			if (isBigPictureStyle) {
+				holder.bigTitle.setText(sb.toString());
+				holder.title.setVisibility(View.GONE);
+			} else {
+				holder.title.setText(sb.toString());
 				holder.bigTitle.setVisibility(View.GONE);
 			}
-			holder.title.setVisibility(View.GONE);
-		} else {
-			holder.bigTitle.setVisibility(View.GONE);
-			if (bigTitle != null) {
-				holder.title.setText(bigTitle);
-			} else if (title != null) {
-				holder.title.setText(title);
+
+			return;
+		}
+
+		List<String> titleSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TITLE));
+		for (String textPiece : titleSss) {
+			if (sb.length() > 0) {
+				sb.append(newLine).append(textPiece);
 			} else {
+				sb.append(textPiece);
+			}
+		}
+
+		if (sb.length() > 0) {
+			if (isBigPictureStyle) {
+				holder.bigTitle.setText(sb.toString());
 				holder.title.setVisibility(View.GONE);
+			} else {
+				holder.title.setText(sb.toString());
+				holder.bigTitle.setVisibility(View.GONE);
 			}
 		}
 	}
 
-	private void initText(ViewHolder holder, Bundle extras) {
+	private void initText(ViewHolder holder, Bundle extras, String newLine) {
 		holder.text.setVisibility(View.VISIBLE);
 
 		StringBuilder sb = new StringBuilder();
-		String newLine = System.getProperty("line.separator");
 
 		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 		if (lines != null && lines.length > 0) {
@@ -219,36 +238,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 	}
 
-	private List<String> extractSpannedStrings(CharSequence charSequence) {
-		// This is a google's sample code from:
-		// https://gitorious.org/cyandreamproject/android_frameworks_base/source/27ccc880ccde614deba4df9bb97a4ccf2afc359a:core/java/com/android/internal/notification/DemoContactNotificationScorer.java#Lundefined
-
-		if (charSequence == null) {
-			return Collections.emptyList();
-		}
-
-		if (!(charSequence instanceof SpannableString)) {
-			return Arrays.asList(charSequence.toString());
-		}
-
-		SpannableString spannableString = (SpannableString) charSequence;
-
-		// get all spans
-		Object[] ssArr = spannableString.getSpans(0, spannableString.length(), Object.class);
-
-		// spanned string sequences
-		ArrayList<String> sss = new ArrayList<>();
-		for (Object spanObj : ssArr) {
-			try {
-				sss.add(spannableString.subSequence(spannableString.getSpanStart(spanObj),
-						spannableString.getSpanEnd(spanObj)).toString());
-			} catch (StringIndexOutOfBoundsException e) {
-				Log.e(TAG, "Bad indices when extracting spanned subsequence", e);
-			}
-		}
-		return sss;
-	}
-
 	private void initIcon(ViewHolder holder, int position, Bundle extras) {
 		holder.icon.setVisibility(View.VISIBLE);
 		holder.icon.setBackground(null);
@@ -287,20 +276,62 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 	}
 
-	private void initInfo(ViewHolder holder, int position, Bundle extras) {
-		// TODO improve this with spannable string support and sb
+	private void initInfo(ViewHolder holder, int position, Bundle extras, String newLine) {
 		holder.info.setVisibility(View.VISIBLE);
-		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
-		if (infoText != null && !infoText.isEmpty()) {
-			holder.info.setText(infoText);
-		} else {
-			int number = nfs.get(position).getNotification().number;
-			if (number > 0) {
-				holder.info.setText(Integer.toString(number));
+
+		StringBuilder sb = new StringBuilder();
+
+		List<String> infoSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_INFO_TEXT));
+		for (String textPiece : infoSss) {
+			if (sb.length() > 0) {
+				sb.append(newLine).append(textPiece);
 			} else {
-				holder.info.setVisibility(View.GONE);
+				sb.append(textPiece);
 			}
 		}
+
+		if (sb.length() == 0) {
+			int number = nfs.get(position).getNotification().number;
+			if (number > 0) {
+				sb.append(number);
+			}
+		}
+
+		if (sb.length() > 0) {
+			holder.info.setText(sb.toString());
+		} else {
+			holder.info.setVisibility(View.GONE);
+		}
+	}
+
+	private List<String> extractSpannedStrings(CharSequence charSequence) {
+		// This is a google's sample code from:
+		// https://gitorious.org/cyandreamproject/android_frameworks_base/source/27ccc880ccde614deba4df9bb97a4ccf2afc359a:core/java/com/android/internal/notification/DemoContactNotificationScorer.java#Lundefined
+
+		if (charSequence == null) {
+			return Collections.emptyList();
+		}
+
+		if (!(charSequence instanceof SpannableString)) {
+			return Arrays.asList(charSequence.toString());
+		}
+
+		SpannableString spannableString = (SpannableString) charSequence;
+
+		// get all spans
+		Object[] ssArr = spannableString.getSpans(0, spannableString.length(), Object.class);
+
+		// spanned string sequences
+		ArrayList<String> sss = new ArrayList<>();
+		for (Object spanObj : ssArr) {
+			try {
+				sss.add(spannableString.subSequence(spannableString.getSpanStart(spanObj),
+						spannableString.getSpanEnd(spanObj)).toString());
+			} catch (StringIndexOutOfBoundsException e) {
+				Log.e(TAG, "Bad indices when extracting spanned subsequence", e);
+			}
+		}
+		return sss;
 	}
 
 	@Override
