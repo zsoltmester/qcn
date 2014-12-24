@@ -129,7 +129,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initTitle(ViewHolder holder, Bundle extras, boolean isBigPictureStyle) {
-		// TODO improve this with spannable string support
+		// TODO improve this with spannable string support and sb
 		holder.bigTitle.setVisibility(View.VISIBLE);
 		holder.title.setVisibility(View.VISIBLE);
 
@@ -158,67 +158,62 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initText(ViewHolder holder, Bundle extras) {
-		// TODO improve this with stringbuilder
 		holder.text.setVisibility(View.VISIBLE);
+
+		StringBuilder sb = new StringBuilder();
 		String newLine = System.getProperty("line.separator");
 
-		String text = "";
-		List<String> textSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TEXT));
-		for (String textPiece : textSss) {
-			text += textPiece;
-		}
-
-		String bigText = "";
-		List<String> bigTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TEXT));
-		for (String textPiece : bigTextSss) {
-			bigText += textPiece;
-		}
-
-		String inboxText = "";
 		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 		if (lines != null && lines.length > 0) {
 			for (CharSequence line : lines) {
 				List<String> lineSss = extractSpannedStrings(line);
 				for (String textPiece : lineSss) {
-					inboxText += textPiece + newLine;
+					if (sb.length() > 0) {
+						sb.append(newLine).append(textPiece);
+					} else {
+						sb.append(textPiece);
+					}
 				}
 			}
-			inboxText = inboxText.substring(0, inboxText.lastIndexOf(newLine));
 		}
 
-		String summaryText = "";
-		List<String> summaryTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT));
-		for (String textPiece : summaryTextSss) {
-			summaryText += textPiece;
-		}
+		if (sb.length() == 0) {
+			List<String> bigTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_BIG_TEXT));
+			for (String textPiece : bigTextSss) {
+				sb.append(textPiece);
+			}
 
-		String subText = "";
-		List<String> subTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUB_TEXT));
-		for (String textPiece : subTextSss) {
-			subText += textPiece;
-		}
-
-		String visibleText = "";
-		visibleText = appendText(visibleText, newLine, inboxText);
-
-		if (visibleText.isEmpty()) {
-			if (!bigText.isEmpty()) {
-				visibleText = bigText;
-			} else if (!text.isEmpty()) {
-				visibleText = text ;
+			if (sb.length() == 0) {
+				List<String> textSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_TEXT));
+				for (String textPiece : textSss) {
+					sb.append(textPiece);
+				}
 			}
 		}
 
-		visibleText = appendText(visibleText, newLine, summaryText);
-
-		if (!subText.isEmpty()) {
-			visibleText += newLine;
+		List<String> summaryTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT));
+		for (String textPiece : summaryTextSss) {
+			if (sb.length() > 0) {
+				sb.append(newLine).append(textPiece);
+			} else {
+				sb.append(textPiece);
+			}
 		}
 
-		visibleText = appendText(visibleText, newLine, subText);
+		List<String> subTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUB_TEXT));
+		if (subTextSss.size() > 0) {
+			sb.append(newLine);
+			for (String textPiece : subTextSss) {
+				if (sb.length() > 0) {
+					sb.append(newLine).append(textPiece);
+				} else {
+					sb.append(textPiece);
+				}
+			}
+		}
 
-		if (!visibleText.isEmpty()) {
-			holder.text.setText(visibleText);
+		if (sb.length() > 0) {
+			holder.text.setText(sb.toString());
 		} else {
 			holder.text.setVisibility(View.GONE);
 		}
@@ -252,14 +247,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			}
 		}
 		return sss;
-	}
-
-	private String appendText(String text, String newLine, String stringToAppend) {
-		if (stringToAppend != null && !stringToAppend.isEmpty()) {
-			return text.isEmpty() ? stringToAppend : text + newLine + stringToAppend;
-		} else {
-			return text;
-		}
 	}
 
 	private void initIcon(ViewHolder holder, int position, Bundle extras) {
@@ -301,7 +288,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initInfo(ViewHolder holder, int position, Bundle extras) {
-		// TODO improve this with spannable string support
+		// TODO improve this with spannable string support and sb
 		holder.info.setVisibility(View.VISIBLE);
 		String infoText = extras.getString(Notification.EXTRA_INFO_TEXT);
 		if (infoText != null && !infoText.isEmpty()) {
