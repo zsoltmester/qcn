@@ -22,12 +22,12 @@
 
 		<ImageButton
 			android:id="@+id/back_btn"
-			android:layout_width="@dimen/qc_back_btn_size"
-			android:layout_height="@dimen/qc_back_btn_size"
+			android:layout_width="@dimen/qc_icon_size"
+			android:layout_height="@dimen/qc_icon_size"
 			android:background="@drawable/bg_back_btn"
 			android:src="@drawable/ic_arrow_back_black_24dp"
 			android:layout_gravity="bottom|center_horizontal"
-			android:layout_marginBottom="@dimen/qc_default_margin" />
+			android:layout_marginBottom="@dimen/qc_medium_margin" />
 
 	</FrameLayout>
 

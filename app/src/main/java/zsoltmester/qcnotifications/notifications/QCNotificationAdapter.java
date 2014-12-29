@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.CardView;
@@ -50,23 +51,22 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
 		synchronized (nfs) {
-			initMargins(holder, position);
-
 			Bundle extras = nfs.get(position).getNotification().extras;
-
-			boolean isBigPictureStyle = initBigPicture(holder, extras);
-
 			String newLine = System.getProperty("line.separator");
 
-			initTitle(holder, extras, isBigPictureStyle, newLine);
+			initMargins(holder, position);
 
-			initText(holder, extras, newLine);
+			initBigPicture(holder, extras);
 
 			initIcon(holder, position, extras);
 
 			initDate(holder, position);
 
-			initInfo(holder, position, extras, newLine);
+			initTitle(holder, extras, newLine);
+
+			initText(holder, extras, newLine);
+
+			initSub(holder, position, extras, newLine);
 		}
 	}
 
@@ -81,7 +81,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
 					topMargin,
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_default_margin)
+					res.getDimensionPixelSize(R.dimen.qc_medium_margin)
 			);
 		} else {
 			topMargin = 0;
@@ -90,7 +90,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
 					topMargin,
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_default_margin)
+					res.getDimensionPixelSize(R.dimen.qc_medium_margin)
 			);
 		}
 
@@ -109,105 +109,20 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
 					topMargin,
 					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_default_margin)
+					res.getDimensionPixelSize(R.dimen.qc_medium_margin)
 			);
 		}
 	}
 
-	private boolean initBigPicture(ViewHolder holder, Bundle extras) {
-		holder.bigPictureFrame.setVisibility(View.VISIBLE);
+	private void initBigPicture(ViewHolder holder, Bundle extras) {
 		holder.bigPicture.setVisibility(View.VISIBLE);
 
 		Bitmap bigPicture = extras.getParcelable(Notification.EXTRA_PICTURE);
 
 		if (bigPicture != null) {
 			holder.bigPicture.setImageBitmap(bigPicture);
-			return true;
 		} else {
-			holder.bigPictureFrame.setVisibility(View.GONE);
 			holder.bigPicture.setVisibility(View.GONE);
-			return false;
-		}
-	}
-
-	private void initTitle(ViewHolder holder, Bundle extras, boolean isBigPictureStyle, String newLine) {
-		holder.bigTitle.setVisibility(View.VISIBLE);
-		holder.title.setVisibility(View.VISIBLE);
-
-		StringBuilder sb = new StringBuilder();
-
-		appendText(sb, newLine, extras, Notification.EXTRA_TITLE_BIG);
-
-		if (sb.length() > 0) {
-			if (isBigPictureStyle) {
-				holder.bigTitle.setText(sb.toString());
-				holder.title.setVisibility(View.GONE);
-			} else {
-				holder.title.setText(sb.toString());
-				holder.bigTitle.setVisibility(View.GONE);
-			}
-
-			return;
-		}
-
-		appendText(sb, newLine, extras, Notification.EXTRA_TITLE);
-
-		if (sb.length() > 0) {
-			if (isBigPictureStyle) {
-				holder.bigTitle.setText(sb.toString());
-				holder.title.setVisibility(View.GONE);
-			} else {
-				holder.title.setText(sb.toString());
-				holder.bigTitle.setVisibility(View.GONE);
-			}
-		}
-	}
-
-	private void initText(ViewHolder holder, Bundle extras, String newLine) {
-		holder.text.setVisibility(View.VISIBLE);
-
-		StringBuilder sb = new StringBuilder();
-
-		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
-		if (lines != null && lines.length > 0) {
-			for (CharSequence line : lines) {
-				List<String> lineSss = extractSpannedStrings(line);
-				for (String textPiece : lineSss) {
-					if (sb.length() > 0) {
-						sb.append(newLine).append(textPiece);
-					} else {
-						sb.append(textPiece);
-					}
-				}
-			}
-		}
-
-		if (sb.length() == 0) {
-			appendText(sb, newLine, extras, Notification.EXTRA_BIG_TEXT);
-
-			if (sb.length() == 0) {
-				appendText(sb, newLine, extras, Notification.EXTRA_TEXT);
-			}
-		}
-
-		appendText(sb, newLine, extras, Notification.EXTRA_SUMMARY_TEXT);
-
-		List<String> subTextSss = extractSpannedStrings(extras.getCharSequence(Notification.EXTRA_SUB_TEXT));
-		if (subTextSss.size() > 0) {
-			sb.append(newLine);
-			for (String textPiece : subTextSss) {
-				if (sb.length() > 0) {
-					sb.append(newLine).append(textPiece);
-				} else {
-					sb.append(textPiece);
-				}
-			}
-		}
-
-		if (sb.length() > 0) {
-			holder.text.setText(sb.toString());
-		} else {
-			holder.text.setVisibility(View.GONE);
 		}
 	}
 
@@ -249,24 +164,92 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 	}
 
-	private void initInfo(ViewHolder holder, int position, Bundle extras, String newLine) {
-		holder.info.setVisibility(View.VISIBLE);
+	private void initTitle(ViewHolder holder, Bundle extras, String newLine) {
+		holder.title.setVisibility(View.VISIBLE);
 
 		StringBuilder sb = new StringBuilder();
 
-		appendText(sb, newLine, extras, Notification.EXTRA_INFO_TEXT);
+		appendText(sb, newLine, extras, Notification.EXTRA_TITLE_BIG);
 
 		if (sb.length() == 0) {
-			int number = nfs.get(position).getNotification().number;
-			if (number > 0) {
-				sb.append(number);
-			}
+			appendText(sb, newLine, extras, Notification.EXTRA_TITLE);
 		}
 
 		if (sb.length() > 0) {
-			holder.info.setText(sb.toString());
+			holder.title.setText(sb.toString());
 		} else {
-			holder.info.setVisibility(View.GONE);
+			holder.title.setVisibility(View.GONE);
+		}
+	}
+
+	private void initText(ViewHolder holder, Bundle extras, String newLine) {
+		holder.text.setVisibility(View.VISIBLE);
+
+		StringBuilder sb = new StringBuilder();
+
+		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+		if (lines != null && lines.length > 0) {
+			for (CharSequence line : lines) {
+				List<String> lineSss = extractSpannedStrings(line);
+				for (String textPiece : lineSss) {
+					if (sb.length() > 0) {
+						sb.append(newLine).append(textPiece);
+					} else {
+						sb.append(textPiece);
+					}
+				}
+			}
+		}
+
+		if (sb.length() == 0) {
+			appendText(sb, newLine, extras, Notification.EXTRA_BIG_TEXT);
+
+			if (sb.length() == 0) {
+				appendText(sb, newLine, extras, Notification.EXTRA_TEXT);
+			}
+		}
+
+		appendText(sb, newLine, extras, Notification.EXTRA_SUMMARY_TEXT);
+
+		if (sb.length() > 0) {
+			holder.text.setText(sb.toString());
+		} else {
+			holder.text.setVisibility(View.GONE);
+		}
+	}
+
+	private void initSub(ViewHolder holder, int position, Bundle extras, String newLine) {
+		// TODO check design with real notifications, then redesign
+		holder.sub.setVisibility(View.VISIBLE);
+
+		StringBuilder sb = new StringBuilder();
+
+		appendText(sb, newLine, extras, Notification.EXTRA_SUB_TEXT);
+		appendText(sb, newLine, extras, Notification.EXTRA_INFO_TEXT);
+
+		int number = nfs.get(position).getNotification().number;
+		if (number > 0) {
+			if (sb.length() > 0) {
+				sb.append(newLine);
+			}
+			sb.append(number);
+		}
+
+		if (sb.length() > 0) {
+			holder.sub.setText(sb.toString());
+		} else {
+			holder.sub.setVisibility(View.GONE);
+		}
+	}
+
+	private void appendText(StringBuilder sb, String newLine, Bundle extras, String res) {
+		List<String> sss = extractSpannedStrings(extras.getCharSequence(res));
+		for (String textPiece : sss) {
+			if (sb.length() > 0) {
+				sb.append(newLine).append(textPiece);
+			} else {
+				sb.append(textPiece);
+			}
 		}
 	}
 
@@ -300,17 +283,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		return sss;
 	}
 
-	private void appendText(StringBuilder sb, String newLine, Bundle extras, String res) {
-		List<String> sss = extractSpannedStrings(extras.getCharSequence(res));
-		for (String textPiece : sss) {
-			if (sb.length() > 0) {
-				sb.append(newLine).append(textPiece);
-			} else {
-				sb.append(textPiece);
-			}
-		}
-	}
-
 	@Override
 	public int getItemCount() {
 		return nfs != null ? nfs.size() : 0;
@@ -318,26 +290,23 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 
 	class ViewHolder extends RecyclerView.ViewHolder {
 		private CardView card;
-		private View bigPictureFrame;
 		private ImageView bigPicture;
-		private TextView bigTitle;
 		private ImageView icon;
 		private TextView date;
-		private TextView info;
 		private TextView title;
 		private TextView text;
+		private TextView sub;
 
 		private ViewHolder(CardView card) {
 			super(card);
 			this.card = card;
-			bigPictureFrame = card.findViewById(R.id.big_picture_frame);
 			bigPicture = (ImageView) card.findViewById(R.id.big_picture);
-			bigTitle = (TextView) card.findViewById(R.id.big_title);
 			icon = (ImageView) card.findViewById(R.id.icon);
 			date = (TextView) card.findViewById(R.id.date);
-			info = (TextView) card.findViewById(R.id.info);
 			title = (TextView) card.findViewById(R.id.title);
 			text = (TextView) card.findViewById(R.id.text);
+			sub = (TextView) card.findViewById(R.id.sub);
+			sub.setTypeface(sub.getTypeface(), Typeface.ITALIC);
 		}
 	}
 }
