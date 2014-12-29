@@ -23,7 +23,7 @@ public class NotificationHelper {
 		Collections.sort(nfs, sorter);
 	}
 
-	// TODO @SuppressWarnings("")
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public static void selectValidNotifications(List<StatusBarNotification> nfs) {
 		synchronized (nfs) {
 			Iterator i = nfs.iterator();
@@ -40,7 +40,7 @@ public class NotificationHelper {
 		return sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE) != null;
 	}
 
-	// TODO @SuppressWarnings("")
+	@SuppressWarnings({"unchecked", "SynchronizationOnLocalVariableOrMethodParameter"})
 	public static void insertNotification(List<StatusBarNotification> nfs, StatusBarNotification sbn, String[] rm) {
 		synchronized (nfs) {
 			ListIterator i = nfs.listIterator();
@@ -58,7 +58,7 @@ public class NotificationHelper {
 		sortNotifications(nfs, rm);
 	}
 
-	// TODO @SuppressWarnings("")
+	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
 	public static void deleteNotification(List<StatusBarNotification> nfs, StatusBarNotification sbn, String[] rm) {
 		synchronized (nfs) {
 			Iterator i = nfs.iterator();

@@ -40,9 +40,7 @@ class QCBaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
-
-		// TODO setTheme call here
-
+		
 		setContentView(R.layout.activity_qc);
 		View coverView = findViewById(R.id.cover);
 

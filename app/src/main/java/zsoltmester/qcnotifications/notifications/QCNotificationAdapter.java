@@ -306,6 +306,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 			title = (TextView) card.findViewById(R.id.title);
 			text = (TextView) card.findViewById(R.id.text);
 			sub = (TextView) card.findViewById(R.id.sub);
+
 			sub.setTypeface(sub.getTypeface(), Typeface.ITALIC);
 		}
 	}

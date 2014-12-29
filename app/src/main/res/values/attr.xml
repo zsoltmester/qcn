@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<attr name="coverStyle" format="reference" />
+	<attr name="backBtnNormal" format="reference" />
+	<attr name="backBtnSelected" format="reference" />
+	<attr name="backBtnRipple" format="reference" />
 </resources>

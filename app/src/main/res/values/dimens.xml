@@ -3,8 +3,8 @@
 	<dimen name="qc_cover_size">263dp</dimen>
 	<dimen name="qc_big_picture_height">128dp</dimen>
 	<dimen name="qc_icon_size">56dp</dimen>
-	<dimen name="qc_first_card_top_margin">48dp</dimen>
-	<dimen name="qc_last_card_bottom_margin">48dp</dimen>
+	<dimen name="qc_first_card_top_margin">56dp</dimen>
+	<dimen name="qc_last_card_bottom_margin">56dp</dimen>
 	<dimen name="qc_card_margins">32dp</dimen>
 	<dimen name="qc_default_larger_text_size">16sp</dimen>
 	<dimen name="qc_default_smaller_text_size">14sp</dimen>

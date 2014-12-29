@@ -52,8 +52,6 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 
 		adapter = new QCNotificationAdapter(nfs, getResources());
 		rv.setAdapter(adapter);
-
-		// TODO set animator for recycle view
 	}
 
 	@Override

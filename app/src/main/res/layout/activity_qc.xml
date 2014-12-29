@@ -10,7 +10,7 @@
 		android:id="@+id/cover"
 		android:layout_width="@dimen/qc_cover_size"
 		android:layout_height="@dimen/qc_cover_size"
-		android:background="@android:color/background_light"
+		android:background="@color/coverBg"
 		android:layout_alignParentTop="true"
 		android:layout_centerHorizontal="true">
 

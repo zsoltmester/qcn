@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- Not customisable colors-->
+	<color name="coverBg">#ffffff</color>
+	<color name="iconBg">#54000000</color>
+	<color name="content">#87000000</color>
+	<color name="title">#000000</color>
+
+	<!-- GreenTheme colors -->
+	<color name="green_A200">#69F0AE</color>
+	<color name="green_A400">#00E676</color>
+	<color name="green_A700">#00C853</color>
+
+</resources>
