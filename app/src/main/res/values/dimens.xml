@@ -8,6 +8,8 @@
 	<dimen name="qc_card_margins">32dp</dimen>
 	<dimen name="qc_default_larger_text_size">16sp</dimen>
 	<dimen name="qc_default_smaller_text_size">14sp</dimen>
+	<dimen name="qc_back_btn_pressed_elevation">14dp</dimen>
+	<dimen name="qc_back_btn_normal_elevation">8dp</dimen>
 	<dimen name="qc_medium_margin">8dp</dimen>
 	<dimen name="qc_card_corner_radius">4dp</dimen>
 </resources>
