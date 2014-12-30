@@ -30,8 +30,8 @@ class QCBaseActivity extends Activity {
 	private int circleYpos;
 	private int circleDiameter;
 
-	// Device model info
 	private boolean isG3;
+	protected boolean isRequirePermission;
 
 	private Context applicationContext;
 	private ContentResolver contentResolver;
@@ -40,7 +40,7 @@ class QCBaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
-		
+
 		setContentView(R.layout.activity_qc);
 		View coverView = findViewById(R.id.cover);
 
@@ -193,13 +193,14 @@ class QCBaseActivity extends Activity {
 
 			switch (quickCoverState) {
 				case EXTRA_VALUE_ACCESSORY_COVER_CLOSED:
-					// CLOSED
 					setWindowFlags();
 					break;
+
 				case EXTRA_VALUE_ACCESSORY_COVER_OPENED:
-					// OPENED
+					if (isRequirePermission) {
+						startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+					}
 					QCBaseActivity.this.finish();
-					break;
 			}
 		}
 	};

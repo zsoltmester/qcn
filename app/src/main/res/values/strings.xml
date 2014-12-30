@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">QC Notifications</string>
+    <string name="error_no_permission">Open the case for enable notification access for this app!</string>
+
+	<!-- temporary -->
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 

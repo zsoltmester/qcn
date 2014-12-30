@@ -80,8 +80,7 @@ public class NotificationHelper {
 			}
 		}
 
-		// it's bad, if it's really get called, but it won't
-		return Integer.MIN_VALUE;
+		return rm.length;
 	}
 
 	private static class Sorter implements Comparator<StatusBarNotification> {

@@ -9,6 +9,8 @@ import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -125,23 +127,37 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	private void initList() {
 		// TODO more gmail notification init instead of 1.
 
-		nfs.addAll(Arrays.asList(nl.getActiveNotifications()));
-
-		if (nfs.size() == 0) {
+		try {
+			nfs.addAll(Arrays.asList(nl.getActiveNotifications()));
+			nl.setCallback(this);
+		} catch (NullPointerException e) {
+			requirePermission();
 			return;
 		}
 
-		NotificationHelper.selectValidNotifications(nfs);
+		synchronized (nfs) {
+			if (nfs.size() == 0) {
+				return;
+			}
 
-		if (nfs.size() == 0) {
-			return;
+			NotificationHelper.selectValidNotifications(nfs);
+
+			if (nfs.size() == 0) {
+				return;
+			}
+
+			String[] rm = nl.getCurrentRanking().getOrderedKeys();
+			NotificationHelper.sortNotifications(nfs, rm);
+
+			adapter.notifyDataSetChanged();
 		}
+	}
 
-		String[] rm = nl.getCurrentRanking().getOrderedKeys();
-		NotificationHelper.sortNotifications(nfs, rm);
+	private void requirePermission() {
+		Log.d(TAG, "requirePermission");
 
-		adapter.notifyDataSetChanged();
+		findViewById(R.id.error).setVisibility(View.VISIBLE);
 
-		nl.setCallback(this);
+		isRequirePermission = true;
 	}
 }

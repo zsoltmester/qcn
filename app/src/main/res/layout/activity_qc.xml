@@ -14,6 +14,18 @@
 		android:layout_alignParentTop="true"
 		android:layout_centerHorizontal="true">
 
+		<TextView
+			android:id="@+id/error"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="@dimen/qc_card_margins"
+			android:paddingRight="@dimen/qc_card_margins"
+			android:layout_gravity="center"
+			android:gravity="center"
+			android:drawableStart="@drawable/ic_error_grey600_48dp"
+			android:text="@string/error_no_permission"
+			android:visibility="gone" />
+
 		<android.support.v7.widget.RecyclerView
 			android:id="@+id/notification_list"
 			android:scrollbars="none"
