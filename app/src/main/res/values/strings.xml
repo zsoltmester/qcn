@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Quick Circle Notifications</string>
-    <string name="error_no_permission">Open the case for enable notification access for this app!</string>
+	<string name="app_name">Quick Circle Notifications</string>
+	<string name="app_version">1.0.0</string>
+	<string name="app_last_updated">January 10, 2014</string>
+	<string name="app_developer">Zsolt Mester</string>
+	<string name="app_email">zsolt.mester67@gmail.com</string>
+
+	<string name="contact_email">EMAIL</string>
+	<string name="contact_change_log">CHANGES</string>
+	<string name="contact_github">GITHUB</string>
+	<string name="contact_readme">README</string>
+
+
+	<!-- Translatable strings-->
+
+	<string name="contact_last_updated">Last Updated</string>
+	<string name="contact_developer">Developer</string>
+	<string name="contact_open_source">This is an open source application!</string>
+	<string name="contact_issues">Tell me your ideas or report bugs!</string>
+
+	<string name="error_no_permission">Open the case for enable notification access for this app!</string>
 
 </resources>

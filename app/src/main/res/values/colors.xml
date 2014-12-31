@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<!-- Not customisable colors-->
+	<!-- Desktop colors-->
+	<color name="subhead">#000000</color>
+	<color name="caption">#54000000</color>
+	<color name="btn_text">#ffffff</color>
+	<color name="action_bar_title">#ffffff</color>
+	<color name="indigo_500">#3F51B5</color>
+	<color name="indigo_700">#303F9F</color>
+	<color name="red_A200">#FF5252</color>
+	<color name="red_A700">#D50000</color>
+
+	<!-- Not customisable colors for QC-->
 	<color name="coverBg">#ffffff</color>
 	<color name="iconBg">#54000000</color>
 	<color name="content">#87000000</color>

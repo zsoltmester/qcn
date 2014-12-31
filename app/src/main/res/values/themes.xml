@@ -4,21 +4,26 @@
 
 	<style name="DesktopTheme" parent="android:Theme.Material.Light">
 		<item name="android:actionBarStyle">@style/ActionBar</item>
-		<item name="android:statusBarColor">#303F9F</item>
+
+		<item name="android:colorPrimary">@color/indigo_500</item>
+		<item name="android:colorPrimaryDark">@color/indigo_700</item>
+		<item name="android:colorAccent">@color/red_A200</item>
+		<item name="android:colorButtonNormal">@color/red_A200</item>
+		<item name="android:colorControlHighlight">@color/red_A700</item>
 	</style>
 
 	<style name="ActionBar" parent="android:Widget.Material.Light.ActionBar.Solid">
-		<item name="android:background">#3F51B5</item>
 		<item name="android:titleTextStyle">@style/TitleTextStyle</item>
 	</style>
 
 	<style name="TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-		<item name="android:textColor">#ffffff</item>
+		<item name="android:textColor">@color/action_bar_title</item>
 	</style>
 
 
 	<!-- QC themes -->
 
+	<!-- TODO change scroll color -->
 	<style name="GreenTheme" parent="android:Theme.Material.Light.NoActionBar.Fullscreen">
 		<item name="backBtnNormal">@color/green_A200</item>
 		<item name="backBtnSelected">@color/green_A400</item>

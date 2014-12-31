@@ -1,4 +1,5 @@
 <resources>
+
 	<!-- Dimens for qc -->
 	<dimen name="qc_cover_size">263dp</dimen>
 	<dimen name="qc_big_picture_height">128dp</dimen>
@@ -12,4 +13,11 @@
 	<dimen name="qc_back_btn_normal_elevation">8dp</dimen>
 	<dimen name="qc_medium_margin">8dp</dimen>
 	<dimen name="qc_card_corner_radius">4dp</dimen>
+
+	<!-- Dimens for desktop -->
+	<dimen name="desktop_margin_horizontal">16dp</dimen>
+	<dimen name="desktop_margin_vertical">16dp</dimen>
+	<dimen name="desktop_subhead_size">16sp</dimen>
+	<dimen name="desktop_caption_size">14sp</dimen>
+
 </resources>
