@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">QC Notifications</string>
+    <string name="app_name">Quick Circle Notifications</string>
     <string name="error_no_permission">Open the case for enable notification access for this app!</string>
-
-	<!-- temporary -->
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 
 </resources>
