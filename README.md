@@ -1,4 +1,4 @@
-qcnotifications
+Quick Circle Notifications
 ===============
 
-Repository of my LG Quick Circle notification android app.
+Repository of the Quick Circle Notifications application.
