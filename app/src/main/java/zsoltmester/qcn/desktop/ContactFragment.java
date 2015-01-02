@@ -1,4 +1,4 @@
-package zsoltmester.qcnotifications.desktop;
+package zsoltmester.qcn.desktop;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import zsoltmester.qcnotifications.R;
+import zsoltmester.qcn.R;
 
 public class ContactFragment extends Fragment {
 

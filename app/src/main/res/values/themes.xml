@@ -5,8 +5,8 @@
 	<style name="DesktopTheme" parent="android:Theme.Material.Light">
 		<item name="android:actionBarStyle">@style/ActionBar</item>
 
-		<item name="android:colorPrimary">@color/indigo_500</item>
-		<item name="android:colorPrimaryDark">@color/indigo_700</item>
+		<item name="android:colorPrimary">@color/green_500</item>
+		<item name="android:colorPrimaryDark">@color/green_700</item>
 		<item name="android:colorAccent">@color/red_A200</item>
 		<item name="android:colorButtonNormal">@color/red_A200</item>
 		<item name="android:colorControlHighlight">@color/red_A700</item>
@@ -14,6 +14,7 @@
 
 	<style name="ActionBar" parent="android:Widget.Material.Light.ActionBar.Solid">
 		<item name="android:titleTextStyle">@style/TitleTextStyle</item>
+
 	</style>
 
 	<style name="TitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">

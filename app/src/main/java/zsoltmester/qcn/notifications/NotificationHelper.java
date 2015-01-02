@@ -1,4 +1,4 @@
-package zsoltmester.qcnotifications.notifications;
+package zsoltmester.qcn.notifications;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;

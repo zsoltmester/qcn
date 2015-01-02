@@ -1,4 +1,4 @@
-package zsoltmester.qcnotifications.notifications;
+package zsoltmester.qcn.notifications;
 
 import android.content.Intent;
 import android.os.Binder;

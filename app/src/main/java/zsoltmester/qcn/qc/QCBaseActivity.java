@@ -1,4 +1,4 @@
-package zsoltmester.qcnotifications.qc;
+package zsoltmester.qcn.qc;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -15,7 +15,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import zsoltmester.qcnotifications.R;
+import zsoltmester.qcn.R;
 
 class QCBaseActivity extends Activity {
 

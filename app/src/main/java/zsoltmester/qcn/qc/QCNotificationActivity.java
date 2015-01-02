@@ -1,4 +1,4 @@
-package zsoltmester.qcnotifications.qc;
+package zsoltmester.qcn.qc;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,18 +10,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import zsoltmester.qcnotifications.R;
-import zsoltmester.qcnotifications.notifications.NotificationHelper;
-import zsoltmester.qcnotifications.notifications.QCNotificationAdapter;
-import zsoltmester.qcnotifications.notifications.QCNotificationListener;
-import zsoltmester.qcnotifications.notifications.QCNotificationListener.QCNotificationBinder;
+import zsoltmester.qcn.R;
+import zsoltmester.qcn.notifications.NotificationHelper;
+import zsoltmester.qcn.notifications.QCNotificationAdapter;
+import zsoltmester.qcn.notifications.QCNotificationListener;
+import zsoltmester.qcn.notifications.QCNotificationListener.QCNotificationBinder;
 
 public class QCNotificationActivity extends QCBaseActivity implements ServiceConnection,
 		QCNotificationListener.Callback {

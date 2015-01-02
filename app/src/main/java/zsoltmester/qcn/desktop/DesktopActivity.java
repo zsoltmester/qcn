@@ -1,9 +1,11 @@
-package zsoltmester.qcnotifications.desktop;
+package zsoltmester.qcn.desktop;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import zsoltmester.qcnotifications.R;
+import zsoltmester.qcn.R;
 
 public class DesktopActivity extends Activity {
 
@@ -18,5 +20,12 @@ public class DesktopActivity extends Activity {
 					.add(R.id.container, new ContactFragment())
 					.commit();
 		}
+
+		ActivityManager.TaskDescription td = new ActivityManager.TaskDescription(
+				getString(R.string.app_name),
+				BitmapFactory.decodeResource(
+						getResources(), R.drawable.ic_launcher),
+				getResources().getColor(R.color.green_700));
+		setTaskDescription(td);
 	}
 }

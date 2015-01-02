@@ -1,4 +1,4 @@
-package zsoltmester.qcnotifications.notifications;
+package zsoltmester.qcn.notifications;
 
 import android.app.Notification;
 import android.content.pm.PackageManager;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import zsoltmester.qcnotifications.R;
+import zsoltmester.qcn.R;
 
 public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAdapter.ViewHolder> {
 
