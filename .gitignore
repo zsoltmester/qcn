@@ -2,11 +2,9 @@
 .idea
 /build
 /gradle
-/gradle.properties
 /gradlew
 /gradlew.bat
-/keystore.properties
-/local.properties
 /qcnotifications.iml
-/app.iml
+*.properties
+*.iml
 *.keystore
