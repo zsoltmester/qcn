@@ -36,7 +36,7 @@ public class ContactFragment extends Fragment {
 	private void sendEmail() {
 		Intent i =
 				new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.contact_my_email), null));
-		i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+		i.putExtra(Intent.EXTRA_SUBJECT, '[' + getString(R.string.app_name) + ']');
 		startActivity(i);
 	}
 

@@ -1,6 +1,12 @@
 .gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
+.idea
 /build
+/gradle
+/gradle.properties
+/gradlew
+/gradlew.bat
+/keystore.properties
+/local.properties
+/qcnotifications.iml
+/app.iml
+*.keystore

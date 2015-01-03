@@ -12,7 +12,7 @@ public class QCNotificationListener extends NotificationListenerService {
 	private final String TAG = QCNotificationListener.class.getSimpleName();
 
 	public static final String ACTION_NOTIFICATION_LISTENER =
-			"zsoltmester.qcnotifications.notifications.NOTIFICATION_LISTENER";
+			"zsoltmester.qcn.notifications.NOTIFICATION_LISTENER";
 
 	private IBinder binder = new QCNotificationBinder();
 	private Callback cb;

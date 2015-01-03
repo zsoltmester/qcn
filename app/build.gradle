@@ -1,27 +1,54 @@
 apply plugin: 'com.android.application'
 
 android {
+	signingConfigs {
+		config {
+			storeFile file('...')
+			storePassword '...'
+			keyAlias '...'
+			keyPassword = '...'
+		}
+	}
 	compileSdkVersion 21
 	buildToolsVersion "21.1.2"
-
 	defaultConfig {
-		applicationId "zsoltmester.qcnotifications"
+		applicationId 'zsoltmester.qcn'
 		minSdkVersion 21
 		targetSdkVersion 21
 		versionCode 1
-		versionName "1.0"
+		versionName "1.0.0"
+		signingConfig signingConfigs.config
 	}
 	buildTypes {
 		release {
-			minifyEnabled false
+			minifyEnabled true
+			shrinkResources true
+			zipAlignEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+			signingConfig signingConfigs.config
 		}
 	}
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
+	compile fileTree(include: ['*.jar'], dir: 'libs')
 	compile 'com.android.support:appcompat-v7:21.0.3'
 	compile 'com.android.support:cardview-v7:21.0.2'
 	compile 'com.android.support:recyclerview-v7:21.0.2'
+}
+
+allprojects {
+	afterEvaluate { project ->
+		def propsFile = rootProject.file('keystore.properties')
+		def configName = 'config'
+
+		if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
+			def props = new Properties()
+			props.load(new FileInputStream(propsFile))
+			android.signingConfigs[configName].storeFile = file(props['storeFile'])
+			android.signingConfigs[configName].storePassword = props['storePassword']
+			android.signingConfigs[configName].keyAlias = props['keyAlias']
+			android.signingConfigs[configName].keyPassword = props['keyPassword']
+		}
+	}
 }

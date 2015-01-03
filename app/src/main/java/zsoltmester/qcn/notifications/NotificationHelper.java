@@ -11,7 +11,6 @@ import java.util.ListIterator;
 
 public class NotificationHelper {
 
-	private static final String TAG = NotificationHelper.class.getSimpleName();
 	private static Sorter sorter;
 
 	public static void sortNotifications(List<StatusBarNotification> nfs, String[] rm) {
