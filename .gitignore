@@ -4,7 +4,6 @@
 /gradle
 /gradlew
 /gradlew.bat
-/qcnotifications.iml
 *.properties
 *.iml
 *.keystore
