@@ -3,6 +3,7 @@ package zsoltmester.qcn.desktop;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 
 import zsoltmester.qcn.R;
@@ -21,11 +22,12 @@ public class DesktopActivity extends Activity {
 					.commit();
 		}
 
-		ActivityManager.TaskDescription td = new ActivityManager.TaskDescription(
-				getString(R.string.app_name),
-				BitmapFactory.decodeResource(
-						getResources(), R.drawable.ic_launcher),
-				getResources().getColor(R.color.green_700));
-		setTaskDescription(td);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			ActivityManager.TaskDescription td = new ActivityManager.TaskDescription(
+					getString(R.string.app_name),
+					BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher),
+					getResources().getColor(R.color.green_700));
+			setTaskDescription(td);
+		}
 	}
 }

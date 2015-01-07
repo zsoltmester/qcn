@@ -1,0 +1,19 @@
+<resources>
+
+	<!-- Desktop theme -->
+
+	<style name="DesktopTheme" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="colorPrimary">@color/green_500</item>
+		<item name="colorPrimaryDark">@color/green_700</item>
+		<item name="colorAccent">@color/red_A200</item>
+	</style>
+
+	<!-- QC themes -->
+
+	<style name="GreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="backBtnNormal">@color/green_A200</item>
+		<item name="backBtnSelected">@color/green_A400</item>
+		<item name="backBtnRipple">@color/green_A700</item>
+	</style>
+
+</resources>

@@ -1,6 +1,8 @@
 package zsoltmester.qcn.notifications;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
+import android.os.Build;
 import android.service.notification.StatusBarNotification;
 
 import java.util.Collections;
@@ -11,15 +13,26 @@ import java.util.ListIterator;
 
 public class NotificationHelper {
 
-	private static Sorter sorter;
+	private static SorterV21 sorterV21;
+	private static Comparator<StatusBarNotification> sorterV19;
 
-	public static void sortNotifications(List<StatusBarNotification> nfs, String[] rm) {
-		if (sorter == null) {
-			sorter = new Sorter();
+	@TargetApi(21)
+	public static void sortNotificationsV21(List<StatusBarNotification> nfs, String[] rm) {
+		if (sorterV21 == null) {
+			sorterV21 = new SorterV21();
 		}
-		sorter.setRankingMap(rm);
+		sorterV21.setRankingMap(rm);
 
-		Collections.sort(nfs, sorter);
+		Collections.sort(nfs, sorterV21);
+	}
+
+	@TargetApi(19)
+	public static void sortNotificationsV19(List<StatusBarNotification> nfs) {
+		if (sorterV19 == null) {
+			sorterV19 = new SorterV19();
+		}
+
+		Collections.sort(nfs, sorterV19);
 	}
 
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
@@ -51,10 +64,14 @@ public class NotificationHelper {
 				}
 			}
 
-			nfs.add(getRank(sbn, rm), sbn);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				nfs.add(getRank(sbn, rm), sbn);
+				sortNotificationsV21(nfs, rm);
+			} else {
+				nfs.add(sbn);
+				sortNotificationsV19(nfs);
+			}
 		}
-
-		sortNotifications(nfs, rm);
 	}
 
 	@SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
@@ -69,9 +86,14 @@ public class NotificationHelper {
 			}
 		}
 
-		sortNotifications(nfs, rm);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			sortNotificationsV21(nfs, rm);
+		} else {
+			sortNotificationsV19(nfs);
+		}
 	}
 
+	@TargetApi(21)
 	private static int getRank(StatusBarNotification sbn, String[] rm) {
 		for (int j = 0; j < rm.length; ++j) {
 			if (rm[j].equals(sbn.getKey())) {
@@ -82,7 +104,8 @@ public class NotificationHelper {
 		return rm.length;
 	}
 
-	private static class Sorter implements Comparator<StatusBarNotification> {
+	@TargetApi(21)
+	private static class SorterV21 implements Comparator<StatusBarNotification> {
 
 		private String[] rm;
 
@@ -93,6 +116,15 @@ public class NotificationHelper {
 		@Override
 		public int compare(StatusBarNotification lhs, StatusBarNotification rhs) {
 			return getRank(lhs, rm) - getRank(rhs, rm);
+		}
+	}
+
+	@TargetApi(19)
+	private static class SorterV19 implements Comparator<StatusBarNotification> {
+
+		@Override
+		public int compare(StatusBarNotification lhs, StatusBarNotification rhs) {
+			return rhs.getNotification().priority - lhs.getNotification().priority;
 		}
 	}
 }

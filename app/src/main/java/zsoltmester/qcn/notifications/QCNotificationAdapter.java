@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.CardView;
@@ -202,7 +203,9 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 
 		if (sb.length() == 0) {
-			appendText(sb, newLine, extras, Notification.EXTRA_BIG_TEXT);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				appendText(sb, newLine, extras, Notification.EXTRA_BIG_TEXT);
+			}
 
 			if (sb.length() == 0) {
 				appendText(sb, newLine, extras, Notification.EXTRA_TEXT);
@@ -219,7 +222,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initSub(ViewHolder holder, int position, Bundle extras, String newLine) {
-		// TODO check design with real notifications, then redesign
 		holder.sub.setVisibility(View.VISIBLE);
 
 		StringBuilder sb = new StringBuilder();

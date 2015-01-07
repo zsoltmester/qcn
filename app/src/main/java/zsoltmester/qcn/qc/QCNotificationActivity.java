@@ -3,6 +3,7 @@ package zsoltmester.qcn.qc;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.service.notification.StatusBarNotification;
@@ -110,7 +111,7 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	public void onNotificationRankingUpdate(String[] rm) {
 		Log.d(TAG, "onNotificationRankingUpdate");
 
-		NotificationHelper.sortNotifications(nfs, rm);
+		NotificationHelper.sortNotificationsV21(nfs, rm);
 
 		runOnUiThread(new Runnable() {
 			@Override
@@ -145,8 +146,12 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 				return;
 			}
 
-			String[] rm = nl.getCurrentRanking().getOrderedKeys();
-			NotificationHelper.sortNotifications(nfs, rm);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				String[] rm = nl.getCurrentRanking().getOrderedKeys();
+				NotificationHelper.sortNotificationsV21(nfs, rm);
+			} else {
+				NotificationHelper.sortNotificationsV19(nfs);
+			}
 
 			adapter.notifyDataSetChanged();
 		}

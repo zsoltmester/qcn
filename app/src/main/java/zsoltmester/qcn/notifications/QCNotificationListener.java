@@ -1,7 +1,9 @@
 package zsoltmester.qcn.notifications;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -24,29 +26,68 @@ public class QCNotificationListener extends NotificationListenerService {
 		return intent.getAction().equals(ACTION_NOTIFICATION_LISTENER) ? binder : super.onBind(intent);
 	}
 
+	// [V21] START notification callbacks
+
 	@Override
+	@TargetApi(21)
 	public void onNotificationRemoved(StatusBarNotification sbn, RankingMap rankingMap) {
-		Log.d(TAG, "onNotificationRemoved");
-		if (cb != null) {
-			cb.onNotificationRemoved(sbn, rankingMap.getOrderedKeys());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			Log.d(TAG, "onNotificationRemoved");
+			if (cb != null) {
+				cb.onNotificationRemoved(sbn, rankingMap.getOrderedKeys());
+			}
 		}
 	}
 
 	@Override
+	@TargetApi(21)
 	public void onNotificationPosted(StatusBarNotification sbn, RankingMap rankingMap) {
-		Log.d(TAG, "onNotificationPosted");
-		if (cb != null) {
-			cb.onNotificationPosted(sbn, rankingMap.getOrderedKeys());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			Log.d(TAG, "onNotificationPosted");
+			if (cb != null) {
+				cb.onNotificationPosted(sbn, rankingMap.getOrderedKeys());
+			}
 		}
 	}
 
 	@Override
+	@TargetApi(21)
 	public void onNotificationRankingUpdate(RankingMap rankingMap) {
-		Log.d(TAG, "onNotificationRankingUpdate");
-		if (cb != null) {
-			cb.onNotificationRankingUpdate(rankingMap.getOrderedKeys());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			Log.d(TAG, "onNotificationRankingUpdate");
+			if (cb != null) {
+				cb.onNotificationRankingUpdate(rankingMap.getOrderedKeys());
+			}
 		}
 	}
+
+	// [V21] END notification callbacks
+
+	// [V19] START notification callbacks
+
+	@Override
+	@TargetApi(19)
+	public void onNotificationPosted(StatusBarNotification sbn) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			Log.d(TAG, "onNotificationPosted");
+			if (cb != null) {
+				cb.onNotificationPosted(sbn, null);
+			}
+		}
+	}
+
+	@Override
+	@TargetApi(19)
+	public void onNotificationRemoved(StatusBarNotification sbn) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			Log.d(TAG, "onNotificationRemoved");
+			if (cb != null) {
+				cb.onNotificationRemoved(sbn, null);
+			}
+		}
+	}
+
+	// [V19] END notification callbacks
 
 	public void setCallback(Callback cb) {
 		this.cb = cb;
