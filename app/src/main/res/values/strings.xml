@@ -2,13 +2,13 @@
 <resources>
 
 	<string name="app_name">Quick Circle Notifications</string>
-	<string name="app_version">1.0.0</string>
-	<!--<string name="app_last_updated">January 10, 2014</string>-->
+	<string name="app_last_updated">January 8, 2015</string>
 	<string name="app_developer">Zsolt Mester</string>
 
+	<string name="contact_change_log">CHANGES</string>
+	<string name="contact_changes_link">https://github.com/zsoltmester/qcn/blob/master/CHANGES.md</string>
 	<string name="contact_email">EMAIL</string>
 	<string name="contact_my_email">zsolt.mester67@gmail.com</string>
-	<!--<string name="contact_change_log">CHANGES</string>-->
 	<string name="contact_github">GITHUB</string>
 	<string name="contact_source_link">https://github.com/zsoltmester/qcn</string>
 	<!--<string name="contact_readme">README</string>-->
@@ -16,7 +16,7 @@
 
 	<!-- Translatable strings-->
 
-	<!--<string name="contact_last_updated">Last Updated</string>-->
+	<string name="contact_last_updated">Last Updated</string>
 	<string name="contact_email_chooser_title">Send email…</string>
 	<string name="contact_developer">Developer</string>
 	<string name="contact_open_source">This is an open source application.</string>
