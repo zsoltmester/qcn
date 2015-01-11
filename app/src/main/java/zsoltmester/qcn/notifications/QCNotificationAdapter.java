@@ -155,7 +155,16 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initDate(ViewHolder holder, int position) {
-		Date date = new Date(nfs.get(position).getPostTime());
+		long when = nfs.get(position).getNotification().when;
+		Date date;
+		
+		if (when > 0) {
+			holder.date.setVisibility(View.VISIBLE);
+			date = new Date(when);
+		} else {
+			holder.date.setVisibility(View.GONE);
+			return;
+		}
 
 		if (DateUtils.isToday(date.getTime())) {
 			holder.date.setText(TODAY_FORMAT.format(date));
@@ -219,7 +228,6 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	}
 
 	private void initSub(ViewHolder holder, int position, Bundle extras, String newLine) {
-		// TODO check design with real notifications, then redesign
 		holder.sub.setVisibility(View.VISIBLE);
 
 		StringBuilder sb = new StringBuilder();

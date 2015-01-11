@@ -2,11 +2,13 @@
 <resources>
 
 	<string name="app_name">Quick Circle Notifications</string>
-	<string name="app_last_updated">January 8, 2015</string>
+	<string name="app_last_updated">January 11, 2015</string>
 	<string name="app_developer">Zsolt Mester</string>
 
 	<string name="contact_change_log">CHANGES</string>
 	<string name="contact_changes_link">https://github.com/zsoltmester/qcn/blob/master/CHANGES.md</string>
+	<string name="contact_rate_btn_title">RATE</string>
+	<string name="contact_rate_link">https://play.google.com/store/apps/details?id=zsoltmester.qcn</string>
 	<string name="contact_email">EMAIL</string>
 	<string name="contact_my_email">zsolt.mester67@gmail.com</string>
 	<string name="contact_github">GITHUB</string>
@@ -17,6 +19,8 @@
 	<!-- Translatable strings-->
 
 	<string name="contact_last_updated">Last Updated</string>
+	<string name="contact_rate_upper_text">Rate it for 5 stars!</string>
+	<string name="contact_rate_lower_text">Do you like this app?</string>
 	<string name="contact_email_chooser_title">Send email…</string>
 	<string name="contact_developer">Developer</string>
 	<string name="contact_open_source">This is an open source application.</string>

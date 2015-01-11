@@ -70,6 +70,45 @@
 					android:layout_height="wrap_content"
 					android:textColor="@color/subhead"
 					android:textSize="@dimen/desktop_subhead_size"
+					android:text="@string/contact_rate_upper_text" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@color/caption"
+					android:textSize="@dimen/desktop_caption_size"
+					android:text="@string/contact_rate_lower_text" />
+
+			</LinearLayout>
+
+			<Button
+				android:id="@+id/rate"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/desktop_margin_horizontal"
+				android:textColor="@color/btn_text"
+				android:text="@string/contact_rate_btn_title" />
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="@dimen/desktop_margin_vertical"
+			android:orientation="horizontal">
+
+			<LinearLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:layout_gravity="center_vertical"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@color/subhead"
+					android:textSize="@dimen/desktop_subhead_size"
 					android:text="@string/app_developer" />
 
 				<TextView

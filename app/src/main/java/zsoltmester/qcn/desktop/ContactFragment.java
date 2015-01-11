@@ -20,6 +20,18 @@ public class ContactFragment extends Fragment {
 	}
 
 	private void configureButtons(View view) {
+		view.findViewById(R.id.changes).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				openChanges();
+			}
+		});
+		view.findViewById(R.id.rate).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				openOnPlayStore();
+			}
+		});
 		view.findViewById(R.id.email).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -30,12 +42,6 @@ public class ContactFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				openGitHub();
-			}
-		});
-		view.findViewById(R.id.changes).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				openChanges();
 			}
 		});
 	}
@@ -53,6 +59,10 @@ public class ContactFragment extends Fragment {
 
 	private void openChanges() {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.contact_changes_link))));
+	}
+
+	private void openOnPlayStore() {
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.contact_rate_link))));
 	}
 
 }
