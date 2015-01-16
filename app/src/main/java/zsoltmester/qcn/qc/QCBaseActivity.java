@@ -1,7 +1,9 @@
 package zsoltmester.qcn.qc;
 
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +33,9 @@ class QCBaseActivity extends Activity {
 	private int circleDiameter;
 
 	private boolean isG3;
-	protected boolean isRequirePermission;
+	protected boolean isRequirePermissionForAccessNotifications;
+	protected boolean isRequirePermissionForLockTheScreen;
+	protected ComponentName deviceAdminReceiverComponentName;
 
 	private Context applicationContext;
 	private ContentResolver contentResolver;
@@ -59,6 +63,8 @@ class QCBaseActivity extends Activity {
 		setCircleLayoutParam(coverView);
 
 		initBackBtn(coverView);
+
+		initComponentApplicationName();
 	}
 
 	@Override
@@ -158,6 +164,10 @@ class QCBaseActivity extends Activity {
 		});
 	}
 
+	private void initComponentApplicationName() {
+		deviceAdminReceiverComponentName = new ComponentName(this, QCNotificationActivity.DeviceAdminListener.class);
+	}
+
 	private final BroadcastReceiver intentReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -197,8 +207,15 @@ class QCBaseActivity extends Activity {
 					break;
 
 				case EXTRA_VALUE_ACCESSORY_COVER_OPENED:
-					if (isRequirePermission) {
+					if (isRequirePermissionForAccessNotifications) {
 						startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+					}
+					if (isRequirePermissionForLockTheScreen) {
+						Intent intentToAddThisAppAsDeviceAdmin =
+								new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+						intentToAddThisAppAsDeviceAdmin.putExtra(
+								DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdminReceiverComponentName);
+						startActivity(intentToAddThisAppAsDeviceAdmin);
 					}
 					QCBaseActivity.this.finish();
 			}

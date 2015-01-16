@@ -1,3 +1,6 @@
+Version: 1.1
+===============
+<code>new</code> Lock the screen with double tap from the quick circle app.<br>
 Version: 1.0.2
 ===============
 <code>new</code> Open the app's play store site from the desktop app<br>

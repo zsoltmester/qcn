@@ -23,7 +23,6 @@
 			android:layout_gravity="center"
 			android:gravity="center"
 			android:drawableStart="@drawable/ic_error_grey600_48dp"
-			android:text="@string/error_no_permission"
 			android:visibility="gone" />
 
 		<android.support.v7.widget.RecyclerView

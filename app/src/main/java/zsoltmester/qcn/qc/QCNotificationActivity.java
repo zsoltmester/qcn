@@ -1,6 +1,9 @@
 package zsoltmester.qcn.qc;
 
+import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -9,7 +12,10 @@ import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +37,9 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 	private QCNotificationListener nl;
 	private QCNotificationAdapter adapter;
 
+	private RecyclerView notificationListDisplayerView;
+	private GestureDetector gestureDetector;
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -46,13 +55,21 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
 
-		RecyclerView rv = (RecyclerView) findViewById(R.id.notification_list);
+		notificationListDisplayerView = (RecyclerView) findViewById(R.id.notification_list);
+
+		gestureDetector = new GestureDetector(this, new SimpleOnGestureListenerWithDoubleTapHandler());
+		notificationListDisplayerView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent motionEvent) {
+				return gestureDetector.onTouchEvent(motionEvent);
+			}
+		});
 
 		RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-		rv.setLayoutManager(layoutManager);
+		notificationListDisplayerView.setLayoutManager(layoutManager);
 
 		adapter = new QCNotificationAdapter(nfs, getResources());
-		rv.setAdapter(adapter);
+		notificationListDisplayerView.setAdapter(adapter);
 	}
 
 	@Override
@@ -130,7 +147,7 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 			nfs.addAll(Arrays.asList(nl.getActiveNotifications()));
 			nl.setCallback(this);
 		} catch (NullPointerException e) {
-			requirePermission();
+			requirePermissionForAccessNotifications();
 			return;
 		}
 
@@ -152,11 +169,61 @@ public class QCNotificationActivity extends QCBaseActivity implements ServiceCon
 		}
 	}
 
-	private void requirePermission() {
-		Log.d(TAG, "requirePermission");
+	private void requirePermissionForAccessNotifications() {
+		Log.d(TAG, "requirePermissionForAccessNotifications");
 
-		findViewById(R.id.error).setVisibility(View.VISIBLE);
+		if (notificationListDisplayerView != null) {
+			notificationListDisplayerView.setVisibility(View.GONE);
+		}
 
-		isRequirePermission = true;
+		TextView errorView = (TextView) findViewById(R.id.error);
+		errorView.setVisibility(View.VISIBLE);
+		errorView.setText(R.string.error_no_permission_for_access_notifications);
+
+		isRequirePermissionForAccessNotifications = true;
+	}
+	
+	private void requirePermissionForLockTheScreen() {
+		Log.d(TAG, "requirePermissionForLockTheScreen");
+
+		if (notificationListDisplayerView != null) {
+			notificationListDisplayerView.setVisibility(View.GONE);
+		}
+
+		TextView errorView = (TextView) findViewById(R.id.error);
+		errorView.setVisibility(View.VISIBLE);
+		errorView.setText(R.string.error_no_permission_for_lock_the_screen);
+		
+		isRequirePermissionForLockTheScreen = true;
+	}
+
+
+	public class SimpleOnGestureListenerWithDoubleTapHandler extends GestureDetector.SimpleOnGestureListener {
+
+		private final String TAG = SimpleOnGestureListenerWithDoubleTapHandler.class.getSimpleName();
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+			return true;
+		}
+
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			Log.d(TAG, "onDoubleTap");
+
+			DevicePolicyManager devicePolicyManager = 
+					(DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+			
+			if (devicePolicyManager.isAdminActive(deviceAdminReceiverComponentName)) {
+				devicePolicyManager.lockNow();
+			} else {
+				requirePermissionForLockTheScreen();
+			}
+
+			return true;
+		}
+	}
+	
+	public static class DeviceAdminListener extends DeviceAdminReceiver {
 	}
 }
