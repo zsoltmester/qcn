@@ -5,13 +5,12 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -146,7 +142,16 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 				holder.icon.setImageDrawable(holder.card.getContext()
 						.createPackageContext(nfs.get(position).getPackageName(), 0).getResources()
 						.getDrawable(iconRes));
-				holder.icon.setBackgroundResource(R.drawable.bg_icon);
+
+				GradientDrawable background = (GradientDrawable) res.getDrawable(R.drawable.bg_icon);
+				int backgroundColor = nfs.get(position).getNotification().color;
+				if (backgroundColor != Notification.COLOR_DEFAULT) {
+					background.setColor(backgroundColor);
+				} else {
+					background.setColor(res.getColor(R.color.iconBg));
+				}
+				holder.icon.setBackground(background);
+
 			} catch (PackageManager.NameNotFoundException | Resources.NotFoundException e) {
 				e.printStackTrace();
 				holder.icon.setVisibility(View.GONE);
@@ -157,7 +162,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	private void initDate(ViewHolder holder, int position) {
 		long when = nfs.get(position).getNotification().when;
 		Date date;
-		
+
 		if (when > 0) {
 			holder.date.setVisibility(View.VISIBLE);
 			date = new Date(when);
@@ -199,13 +204,10 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 		if (lines != null && lines.length > 0) {
 			for (CharSequence line : lines) {
-				List<String> lineSss = extractSpannedStrings(line);
-				for (String textPiece : lineSss) {
-					if (sb.length() > 0) {
-						sb.append(newLine).append(textPiece);
-					} else {
-						sb.append(textPiece);
-					}
+				if (sb.length() > 0) {
+					sb.append(newLine).append(line);
+				} else {
+					sb.append(line);
 				}
 			}
 		}
@@ -250,45 +252,18 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 		}
 	}
 
-	private void appendText(StringBuilder sb, String newLine, Bundle extras, String res) {
-		List<String> sss = extractSpannedStrings(extras.getCharSequence(res));
-		for (String textPiece : sss) {
-			if (sb.length() > 0) {
-				sb.append(newLine).append(textPiece);
-			} else {
-				sb.append(textPiece);
-			}
-		}
-	}
+	private void appendText(StringBuilder stringBuilder, String newLine, Bundle extras, String resourceFlag) {
+		CharSequence someText = extras.getCharSequence(resourceFlag);
 
-	private List<String> extractSpannedStrings(CharSequence charSequence) {
-		// This is a google's sample code from:
-		// https://gitorious.org/cyandreamproject/android_frameworks_base/source/27ccc880ccde614deba4df9bb97a4ccf2afc359a:core/java/com/android/internal/notification/DemoContactNotificationScorer.java#Lundefined
-
-		if (charSequence == null) {
-			return Collections.emptyList();
+		if (someText == null || someText.length() == 0) {
+			return;
 		}
 
-		if (!(charSequence instanceof SpannableString)) {
-			return Arrays.asList(charSequence.toString());
+		if (stringBuilder.length() > 0) {
+			stringBuilder.append(newLine).append(someText);
+		} else {
+			stringBuilder.append(someText);
 		}
-
-		SpannableString spannableString = (SpannableString) charSequence;
-
-		// get all spans
-		Object[] ssArr = spannableString.getSpans(0, spannableString.length(), Object.class);
-
-		// spanned string sequences
-		ArrayList<String> sss = new ArrayList<>();
-		for (Object spanObj : ssArr) {
-			try {
-				sss.add(spannableString.subSequence(spannableString.getSpanStart(spanObj),
-						spannableString.getSpanEnd(spanObj)).toString());
-			} catch (StringIndexOutOfBoundsException e) {
-				Log.e(TAG, "Bad indices when extracting spanned subsequence", e);
-			}
-		}
-		return sss;
 	}
 
 	@Override

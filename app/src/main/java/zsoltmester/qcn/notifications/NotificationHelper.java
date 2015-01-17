@@ -1,6 +1,5 @@
 package zsoltmester.qcn.notifications;
 
-import android.app.Notification;
 import android.service.notification.StatusBarNotification;
 
 import java.util.Collections;
@@ -35,8 +34,7 @@ public class NotificationHelper {
 	}
 
 	public static boolean isDisplayable(StatusBarNotification sbn) {
-		// TODO it's enough for check if it is displayable?
-		return sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE) != null;
+		return !sbn.isOngoing();
 	}
 
 	@SuppressWarnings({"unchecked", "SynchronizationOnLocalVariableOrMethodParameter"})
