@@ -1,4 +1,4 @@
-package zsoltmester.qcn.notifications;
+package zsoltmester.qcn.quickcircle.notifications;
 
 import android.app.Notification;
 import android.content.pm.PackageManager;
@@ -23,9 +23,9 @@ import java.util.List;
 
 import zsoltmester.qcn.R;
 
-public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAdapter.ViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
-	private static final String TAG = QCNotificationAdapter.class.getSimpleName();
+	private static final String TAG = NotificationAdapter.class.getSimpleName();
 
 	private static final SimpleDateFormat TODAY_FORMAT = new SimpleDateFormat("HH:mm");
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d");
@@ -33,7 +33,7 @@ public class QCNotificationAdapter extends RecyclerView.Adapter<QCNotificationAd
 	private final List<StatusBarNotification> nfs;
 	private Resources res;
 
-	public QCNotificationAdapter(List<StatusBarNotification> nfs, Resources res) {
+	public NotificationAdapter(List<StatusBarNotification> nfs, Resources res) {
 		this.nfs = nfs;
 		this.res = res;
 	}

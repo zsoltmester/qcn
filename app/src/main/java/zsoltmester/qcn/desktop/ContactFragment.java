@@ -10,59 +10,89 @@ import android.view.ViewGroup;
 
 import zsoltmester.qcn.R;
 
+import static android.view.View.OnClickListener;
+
 public class ContactFragment extends Fragment {
+
+	private View fragmentLayout;
+	private View buttonToChanges;
+	private View buttonToRate;
+	private View buttonToEmail;
+	private View buttonToSourceCode;
+	private OnClickListenerForButtons onClickListenerForButtons = new OnClickListenerForButtons();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_contact, container, false);
-		configureButtons(view);
-		return view;
+		fragmentLayout = inflater.inflate(R.layout.fragment_contact, container, false);
+		initButtons();
+		return fragmentLayout;
 	}
 
-	private void configureButtons(View view) {
-		view.findViewById(R.id.changes).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				openChanges();
+	private void initButtons() {
+		findButtonsOnLayout();
+		initButtonsOnClickListener();
+	}
+
+	private void findButtonsOnLayout() {
+		buttonToChanges = fragmentLayout.findViewById(R.id.changes);
+		buttonToRate = fragmentLayout.findViewById(R.id.rate);
+		buttonToEmail = fragmentLayout.findViewById(R.id.email);
+		buttonToSourceCode = fragmentLayout.findViewById(R.id.github);
+	}
+
+	private void initButtonsOnClickListener() {
+		buttonToChanges.setOnClickListener(onClickListenerForButtons);
+		buttonToRate.setOnClickListener(onClickListenerForButtons);
+		buttonToEmail.setOnClickListener(onClickListenerForButtons);
+		buttonToSourceCode.setOnClickListener(onClickListenerForButtons);
+	}
+
+	private class OnClickListenerForButtons implements OnClickListener {
+
+		@Override
+		public void onClick(View view) {
+			switch (view.getId()) {
+				case R.id.changes:
+					openChangeLog();
+					break;
+				case R.id.rate:
+					openOnPlayStore();
+					break;
+				case R.id.email:
+					openEmailApp();
+					break;
+				case R.id.github:
+					openSourceCode();
+					break;
 			}
-		});
-		view.findViewById(R.id.rate).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				openOnPlayStore();
-			}
-		});
-		view.findViewById(R.id.email).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				sendEmail();
-			}
-		});
-		view.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				openGitHub();
-			}
-		});
-	}
+		}
 
-	private void sendEmail() {
-		Intent i =
-				new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.contact_my_email), null));
-		i.putExtra(Intent.EXTRA_SUBJECT, '[' + getString(R.string.app_name) + ']');
-		startActivity(i);
-	}
+		private void openChangeLog() {
+			String changesLink = getString(R.string.contact_changes_link);
+			Intent intentToOpenChangeLog = new Intent(Intent.ACTION_VIEW, Uri.parse(changesLink));
+			startActivity(intentToOpenChangeLog);
+		}
 
-	private void openGitHub() {
-		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.contact_source_link))));
-	}
+		private void openOnPlayStore() {
+			String playStoreLink = getString(R.string.contact_rate_link);
+			Intent intentToOpenOnPlayStore = new Intent(Intent.ACTION_VIEW, Uri.parse(playStoreLink));
+			startActivity(intentToOpenOnPlayStore);
+		}
 
-	private void openChanges() {
-		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.contact_changes_link))));
-	}
+		private void openEmailApp() {
+			String emailScheme = "mailto";
+			String developerEmail = getString(R.string.contact_my_email);
+			String emailSubject = '[' + getString(R.string.app_name) + ']';
+			Intent intentToSendEmail =
+					new Intent(Intent.ACTION_SENDTO, Uri.fromParts(emailScheme, developerEmail, null));
+			intentToSendEmail.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+			startActivity(intentToSendEmail);
+		}
 
-	private void openOnPlayStore() {
-		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.contact_rate_link))));
+		private void openSourceCode() {
+			String sourceCodeLink = getString(R.string.contact_source_link);
+			Intent intentToOpenSourceCode = new Intent(Intent.ACTION_VIEW, Uri.parse(sourceCodeLink));
+			startActivity(intentToOpenSourceCode);
+		}
 	}
-
 }

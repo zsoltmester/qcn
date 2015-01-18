@@ -4,12 +4,12 @@
 
 	<application
 		android:allowBackup="true"
-		android:icon="@drawable/ic_launcher"
+		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name">
 
 		<activity
-			android:name="zsoltmester.qcn.desktop.DesktopActivity"
-			android:icon="@drawable/ic_launcher"
+			android:name=".desktop.DesktopActivity"
+			android:icon="@mipmap/ic_launcher"
 			android:label="@string/app_name"
 			android:theme="@style/DesktopTheme">
 			<intent-filter>
@@ -19,8 +19,8 @@
 		</activity>
 
 		<activity
-			android:name=".qc.QCNotificationActivity"
-			android:icon="@drawable/ic_launcher"
+			android:name=".quickcircle.notifications.NotificationActivity"
+			android:icon="@mipmap/ic_launcher"
 			android:label="@string/app_name"
 			android:excludeFromRecents="true"
 			android:screenOrientation="portrait"
@@ -33,7 +33,7 @@
 		</activity>
 
 		<service
-			android:name=".notifications.QCNotificationListener"
+			android:name=".quickcircle.notifications.NotificationListener"
 			android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
 			<intent-filter>
 				<action android:name="android.service.notification.NotificationListenerService" />
@@ -41,7 +41,7 @@
 		</service>
 
 		<receiver
-			android:name=".qc.QCNotificationActivity$DeviceAdminListener"
+			android:name=".quickcircle.notifications.NotificationActivity$DeviceAdminListener"
 			android:permission="android.permission.BIND_DEVICE_ADMIN">
 			<meta-data
 				android:name="android.app.device_admin"
