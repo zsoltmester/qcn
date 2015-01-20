@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<attr name="backBtnNormal" format="reference" />
-	<attr name="backBtnSelected" format="reference" />
-	<attr name="backBtnRipple" format="reference" />
+	<attr name="backBtnNormalColor" format="reference" />
+	<attr name="backBtnSelectedColor" format="reference" />
+	<attr name="backBtnRippleColor" format="reference" />
 </resources>

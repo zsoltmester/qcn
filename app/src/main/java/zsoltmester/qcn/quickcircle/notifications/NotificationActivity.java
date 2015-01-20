@@ -43,7 +43,7 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 
 	@Override
 	protected int getCoverLayoutIdentifier() {
-		return R.layout.activity_qc;
+		return R.layout.activity_notification;
 	}
 
 	@Override
@@ -57,11 +57,12 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 	}
 
 	private void initNotificationsAdapter() {
-		notificationAdapter = new NotificationAdapter(statusBarNotifications, getResources());
+		notificationAdapter =
+				NotificationAdapter.createFromNotificationsAndResources(statusBarNotifications, getResources());
 	}
 
 	private void initNotificationsContainerView() {
-		notificationsContainerView = (RecyclerView) findViewById(R.id.notification_list);
+		notificationsContainerView = (RecyclerView) findViewById(R.id.notification_list_container);
 		notificationsContainerView.setLayoutManager(new LinearLayoutManager(this));
 		initDoubleTapDetector();
 		notificationsContainerView.setAdapter(notificationAdapter);
@@ -132,12 +133,12 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 		displayErrorViewWithTheGivenText(R.string.error_no_permission_for_access_notifications);
 		doNotHaveAccessToNotifications = true;
 	}
-	
+
 	private void displayErrorViewWithTheGivenText(int textResourceIdentifier) {
 		if (notificationsContainerView != null) {
 			notificationsContainerView.setVisibility(View.GONE);
 		}
-		TextView errorView = (TextView) findViewById(R.id.error);
+		TextView errorView = (TextView) findViewById(R.id.error_view);
 		errorView.setVisibility(View.VISIBLE);
 		errorView.setText(textResourceIdentifier);
 	}
@@ -224,15 +225,23 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 	@Override
 	public void onCoverOpened() {
 		if (doNotHaveAccessToNotifications) {
-			startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-		} 
+			openNotificationListenerSettings();
+		}
 		if (doNotHaveAccessForLockTheScreen) {
-			Intent intentToAddThisAppAsDeviceAdmin = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-			intentToAddThisAppAsDeviceAdmin.putExtra(
-					DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdminReceiverComponentName);
-			startActivity(intentToAddThisAppAsDeviceAdmin);
+			addThisAppAsDeviceAdmin();
 		}
 		super.onCoverOpened();
+	}
+	
+	private void openNotificationListenerSettings() {
+		startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+	}
+	
+	private void addThisAppAsDeviceAdmin() {
+		Intent intentToAddThisAppAsDeviceAdmin = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+		intentToAddThisAppAsDeviceAdmin.putExtra(
+				DevicePolicyManager.EXTRA_DEVICE_ADMIN, deviceAdminReceiverComponentName);
+		startActivity(intentToAddThisAppAsDeviceAdmin);
 	}
 
 	/**

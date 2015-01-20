@@ -34,7 +34,7 @@ public class DesktopActivity extends Activity {
 
 		getFragmentManager()
 				.beginTransaction()
-				.add(R.id.container, getHomeScreenFragment())
+				.add(R.id.desktop_fragment_container, getHomeScreenFragment())
 				.commit();
 	}
 

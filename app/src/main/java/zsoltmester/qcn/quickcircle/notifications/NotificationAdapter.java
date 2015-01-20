@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
@@ -23,274 +24,250 @@ import java.util.List;
 
 import zsoltmester.qcn.R;
 
+import static android.support.v7.widget.RecyclerView.LayoutParams;
+
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
-	private static final String TAG = NotificationAdapter.class.getSimpleName();
-
+	private final List<StatusBarNotification> statusBarNotifications;
+	private Resources resources;
+	private ViewHolder currentViewHolder;
+	private int currentPosition;
+	private Notification currentNotification;
+	private Bundle currentExtras;
+	private String newLine = System.getProperty("line.separator");
 	private static final SimpleDateFormat TODAY_FORMAT = new SimpleDateFormat("HH:mm");
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d");
+	private static final SimpleDateFormat REGULAR_DATE_FORMAT = new SimpleDateFormat("MMM d");
 
-	private final List<StatusBarNotification> nfs;
-	private Resources res;
+	private NotificationAdapter(List<StatusBarNotification> statusBarNotifications, Resources resources) {
+		this.statusBarNotifications = statusBarNotifications;
+		this.resources = resources;
+	}
 
-	public NotificationAdapter(List<StatusBarNotification> nfs, Resources res) {
-		this.nfs = nfs;
-		this.res = res;
+	public static NotificationAdapter createFromNotificationsAndResources(
+			List<StatusBarNotification> statusBarNotifications, Resources resources) {
+		return new NotificationAdapter(statusBarNotifications, resources);
 	}
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		CardView card = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.qc_line, parent, false);
+		CardView card = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.card, parent, false);
 		return new ViewHolder(card);
 	}
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		synchronized (nfs) {
-			Bundle extras = nfs.get(position).getNotification().extras;
-			String newLine = System.getProperty("line.separator");
-
-			initMargins(holder, position);
-
-			initBigPicture(holder, extras);
-
-			initIcon(holder, position, extras);
-
-			initDate(holder, position);
-
-			initTitle(holder, extras, newLine);
-
-			initText(holder, extras, newLine);
-
-			initSub(holder, position, extras, newLine);
+		synchronized (statusBarNotifications) {
+			currentViewHolder = holder;
+			currentPosition = position;
+			currentNotification = statusBarNotifications.get(position).getNotification();
+			currentExtras = currentNotification.extras;
+			initTheCard();
 		}
 	}
 
-	private void initMargins(ViewHolder holder, int position) {
-		int topMargin;
-
-		// first element
-		if (position == 0) {
-			topMargin = res.getDimensionPixelSize(R.dimen.qc_first_card_top_margin);
-			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
-			lp.setMargins(
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					topMargin,
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_medium_margin)
-			);
-		} else {
-			topMargin = 0;
-			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
-			lp.setMargins(
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					topMargin,
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_medium_margin)
-			);
-		}
-
-		// last element
-		if (position == nfs.size() - 1) {
-			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
-			lp.setMargins(
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					topMargin,
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_last_card_bottom_margin)
-			);
-		} else {
-			RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
-			lp.setMargins(
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					topMargin,
-					res.getDimensionPixelSize(R.dimen.qc_card_margins),
-					res.getDimensionPixelSize(R.dimen.qc_medium_margin)
-			);
-		}
+	private void initTheCard() {
+		initMargins();
+		initBigPicture();
+		initIcon();
+		initDate();
+		initTitle();
+		initText();
+		initSubText();
 	}
 
-	private void initBigPicture(ViewHolder holder, Bundle extras) {
-		holder.bigPicture.setVisibility(View.VISIBLE);
+	private void initMargins() {
+		int topMargin = currentPosition == 0 ? resources.getDimensionPixelSize(R.dimen.qc_first_card_top_margin) : 0;
+		int bottomMargin = currentPosition == statusBarNotifications.size() - 1
+				? resources.getDimensionPixelSize(R.dimen.qc_last_card_bottom_margin)
+				: resources.getDimensionPixelSize(R.dimen.qc_medium_margin);
+		LayoutParams cardViewLayoutParams = (LayoutParams) currentViewHolder.cardView.getLayoutParams();
+		cardViewLayoutParams.setMargins(resources.getDimensionPixelSize(R.dimen.qc_card_margins), topMargin,
+				resources.getDimensionPixelSize(R.dimen.qc_card_margins), bottomMargin);
+	}
 
-		Bitmap bigPicture = extras.getParcelable(Notification.EXTRA_PICTURE);
-
+	private void initBigPicture() {
+		Bitmap bigPicture = currentExtras.getParcelable(Notification.EXTRA_PICTURE);
 		if (bigPicture != null) {
-			holder.bigPicture.setImageBitmap(bigPicture);
+			currentViewHolder.bigPictureView.setVisibility(View.VISIBLE);
+			currentViewHolder.bigPictureView.setImageBitmap(bigPicture);
 		} else {
-			holder.bigPicture.setVisibility(View.GONE);
+			currentViewHolder.bigPictureView.setVisibility(View.GONE);
 		}
 	}
 
-	private void initIcon(ViewHolder holder, int position, Bundle extras) {
-		holder.icon.setVisibility(View.VISIBLE);
-		holder.icon.setBackground(null);
-
-		Integer iconRes = nfs.get(position).getNotification().icon;
-		Object smallIcon = extras.get(Notification.EXTRA_SMALL_ICON);
-		Object largeIcon = extras.get(Notification.EXTRA_LARGE_ICON);
-		Object bigLargeIcon = extras.get(Notification.EXTRA_LARGE_ICON_BIG);
-
+	private void initIcon() {
+		currentViewHolder.iconView.setVisibility(View.VISIBLE);
+		int iconResourceId = currentNotification.icon;
+		Object smallIcon = currentExtras.get(Notification.EXTRA_SMALL_ICON);
+		Object largeIcon = currentExtras.get(Notification.EXTRA_LARGE_ICON);
+		Object bigLargeIcon = currentExtras.get(Notification.EXTRA_LARGE_ICON_BIG);
 		if (bigLargeIcon instanceof Bitmap) {
-			holder.icon.setImageBitmap((Bitmap) bigLargeIcon);
+			currentViewHolder.iconView.setBackground(null);
+			currentViewHolder.iconView.setImageBitmap((Bitmap) bigLargeIcon);
 		} else if (largeIcon instanceof Bitmap) {
-			holder.icon.setImageBitmap((Bitmap) largeIcon);
+			currentViewHolder.iconView.setBackground(null);
+			currentViewHolder.iconView.setImageBitmap((Bitmap) largeIcon);
 		} else if (smallIcon instanceof Bitmap) {
-			holder.icon.setImageBitmap((Bitmap) smallIcon);
+			currentViewHolder.iconView.setBackground(null);
+			currentViewHolder.iconView.setImageBitmap((Bitmap) smallIcon);
 		} else {
 			try {
-				holder.icon.setImageDrawable(holder.card.getContext()
-						.createPackageContext(nfs.get(position).getPackageName(), 0).getResources()
-						.getDrawable(iconRes));
-
-				GradientDrawable background = (GradientDrawable) res.getDrawable(R.drawable.bg_icon);
-				int backgroundColor = nfs.get(position).getNotification().color;
-				if (backgroundColor != Notification.COLOR_DEFAULT) {
-					background.setColor(backgroundColor);
-				} else {
-					background.setColor(res.getColor(R.color.iconBg));
-				}
-				holder.icon.setBackground(background);
-
-			} catch (PackageManager.NameNotFoundException | Resources.NotFoundException e) {
+				initIconFromResource(iconResourceId);
+			} catch (Resources.NotFoundException | PackageManager.NameNotFoundException e) {
+				currentViewHolder.iconView.setVisibility(View.GONE);
 				e.printStackTrace();
-				holder.icon.setVisibility(View.GONE);
 			}
 		}
 	}
 
-	private void initDate(ViewHolder holder, int position) {
-		long when = nfs.get(position).getNotification().when;
-		Date date;
-
-		if (when > 0) {
-			holder.date.setVisibility(View.VISIBLE);
-			date = new Date(when);
+	private void initIconFromResource(int iconResourceId)
+			throws Resources.NotFoundException, PackageManager.NameNotFoundException {
+		Drawable iconFromResource = currentViewHolder.cardView.getContext()
+				.createPackageContext(statusBarNotifications.get(currentPosition).getPackageName(), 0)
+				.getResources().getDrawable(iconResourceId);
+		currentViewHolder.iconView.setImageDrawable(iconFromResource);
+		GradientDrawable background = (GradientDrawable) resources.getDrawable(R.drawable.bg_icon);
+		int backgroundColor = currentNotification.color;
+		if (backgroundColor != Notification.COLOR_DEFAULT) {
+			background.setColor(backgroundColor);
 		} else {
-			holder.date.setVisibility(View.GONE);
-			return;
+			background.setColor(resources.getColor(R.color.iconBg));
 		}
+		currentViewHolder.iconView.setBackground(background);
+	}
 
+	private void initDate() {
+		long notificationWhenParameter = currentNotification.when;
+		if (notificationWhenParameter > 0) {
+			currentViewHolder.dateView.setVisibility(View.VISIBLE);
+			formatGivenDateAndInit(new Date(notificationWhenParameter));
+		} else {
+			currentViewHolder.dateView.setVisibility(View.GONE);
+		}
+	}
+
+	private void formatGivenDateAndInit(Date date) {
 		if (DateUtils.isToday(date.getTime())) {
-			holder.date.setText(TODAY_FORMAT.format(date));
+			currentViewHolder.dateView.setText(TODAY_FORMAT.format(date));
 		} else {
-			holder.date.setText(DATE_FORMAT.format(date));
+			currentViewHolder.dateView.setText(REGULAR_DATE_FORMAT.format(date));
 		}
 	}
 
-	private void initTitle(ViewHolder holder, Bundle extras, String newLine) {
-		holder.title.setVisibility(View.VISIBLE);
-
-		StringBuilder sb = new StringBuilder();
-
-		appendText(sb, newLine, extras, Notification.EXTRA_TITLE_BIG);
-
-		if (sb.length() == 0) {
-			appendText(sb, newLine, extras, Notification.EXTRA_TITLE);
+	private void initTitle() {
+		StringBuilder titleBuilder = new StringBuilder();
+		appendTextToABuilderFromAResource(titleBuilder, Notification.EXTRA_TITLE_BIG);
+		if (titleBuilder.length() == 0) {
+			appendTextToABuilderFromAResource(titleBuilder, Notification.EXTRA_TITLE);
 		}
-
-		if (sb.length() > 0) {
-			holder.title.setText(sb.toString());
+		if (titleBuilder.length() > 0) {
+			currentViewHolder.titleView.setVisibility(View.VISIBLE);
+			currentViewHolder.titleView.setText(titleBuilder.toString());
 		} else {
-			holder.title.setVisibility(View.GONE);
+			currentViewHolder.titleView.setVisibility(View.GONE);
 		}
 	}
 
-	private void initText(ViewHolder holder, Bundle extras, String newLine) {
-		holder.text.setVisibility(View.VISIBLE);
-
-		StringBuilder sb = new StringBuilder();
-
-		CharSequence[] lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
-		if (lines != null && lines.length > 0) {
-			for (CharSequence line : lines) {
-				if (sb.length() > 0) {
-					sb.append(newLine).append(line);
-				} else {
-					sb.append(line);
-				}
-			}
-		}
-
-		if (sb.length() == 0) {
-			appendText(sb, newLine, extras, Notification.EXTRA_BIG_TEXT);
-
-			if (sb.length() == 0) {
-				appendText(sb, newLine, extras, Notification.EXTRA_TEXT);
-			}
-		}
-
-		appendText(sb, newLine, extras, Notification.EXTRA_SUMMARY_TEXT);
-
-		if (sb.length() > 0) {
-			holder.text.setText(sb.toString());
-		} else {
-			holder.text.setVisibility(View.GONE);
-		}
-	}
-
-	private void initSub(ViewHolder holder, int position, Bundle extras, String newLine) {
-		holder.sub.setVisibility(View.VISIBLE);
-
-		StringBuilder sb = new StringBuilder();
-
-		appendText(sb, newLine, extras, Notification.EXTRA_SUB_TEXT);
-		appendText(sb, newLine, extras, Notification.EXTRA_INFO_TEXT);
-
-		int number = nfs.get(position).getNotification().number;
-		if (number > 0) {
-			if (sb.length() > 0) {
-				sb.append(newLine);
-			}
-			sb.append(number);
-		}
-
-		if (sb.length() > 0) {
-			holder.sub.setText(sb.toString());
-		} else {
-			holder.sub.setVisibility(View.GONE);
-		}
-	}
-
-	private void appendText(StringBuilder stringBuilder, String newLine, Bundle extras, String resourceFlag) {
-		CharSequence someText = extras.getCharSequence(resourceFlag);
-
-		if (someText == null || someText.length() == 0) {
+	private void appendTextToABuilderFromAResource(StringBuilder builder, String resourceId) {
+		CharSequence text = currentExtras.getCharSequence(resourceId);
+		if (text == null || text.length() == 0) {
 			return;
 		}
-
-		if (stringBuilder.length() > 0) {
-			stringBuilder.append(newLine).append(someText);
+		if (builder.length() > 0) {
+			builder.append(newLine).append(text);
 		} else {
-			stringBuilder.append(someText);
+			builder.append(text);
 		}
+	}
+
+	private void initText() {
+		StringBuilder textBuilder = new StringBuilder();
+		appendInboxStyleTextToABuilder(textBuilder);
+		if (textBuilder.length() == 0) {
+			appendTextToABuilderFromAResource(textBuilder, Notification.EXTRA_BIG_TEXT);
+			if (textBuilder.length() == 0) {
+				appendTextToABuilderFromAResource(textBuilder, Notification.EXTRA_TEXT);
+			}
+		}
+		appendTextToABuilderFromAResource(textBuilder, Notification.EXTRA_SUMMARY_TEXT);
+		if (textBuilder.length() > 0) {
+			currentViewHolder.textView.setVisibility(View.VISIBLE);
+			currentViewHolder.textView.setText(textBuilder.toString());
+		} else {
+			currentViewHolder.textView.setVisibility(View.GONE);
+		}
+	}
+
+	private void appendInboxStyleTextToABuilder(StringBuilder builder) {
+		CharSequence[] lines = currentExtras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+		if (lines == null || lines.length == 0) {
+			return;
+		}
+		for (CharSequence line : lines) {
+			if (builder.length() > 0) {
+				builder.append(newLine).append(line);
+			} else {
+				builder.append(line);
+			}
+		}
+	}
+
+	private void initSubText() {
+		StringBuilder subTextBuilder = new StringBuilder();
+		appendTextToABuilderFromAResource(subTextBuilder, Notification.EXTRA_SUB_TEXT);
+		appendTextToABuilderFromAResource(subTextBuilder, Notification.EXTRA_INFO_TEXT);
+		appendNumberToABuilder(subTextBuilder);
+		if (subTextBuilder.length() > 0) {
+			currentViewHolder.subTextView.setVisibility(View.VISIBLE);
+			currentViewHolder.subTextView.setText(subTextBuilder.toString());
+		} else {
+			currentViewHolder.subTextView.setVisibility(View.GONE);
+		}
+	}
+
+	private void appendNumberToABuilder(StringBuilder builder) {
+		int number = currentNotification.number;
+		if (number < 2) {
+			return;
+		}
+		if (builder.length() > 0) {
+			builder.append(newLine);
+		}
+		builder.append(number);
 	}
 
 	@Override
 	public int getItemCount() {
-		return nfs != null ? nfs.size() : 0;
+		return statusBarNotifications != null ? statusBarNotifications.size() : 0;
 	}
 
 	class ViewHolder extends RecyclerView.ViewHolder {
-		private CardView card;
-		private ImageView bigPicture;
-		private ImageView icon;
-		private TextView date;
-		private TextView title;
-		private TextView text;
-		private TextView sub;
+		private CardView cardView;
+		private ImageView bigPictureView;
+		private ImageView iconView;
+		private TextView dateView;
+		private TextView titleView;
+		private TextView textView;
+		private TextView subTextView;
 
-		private ViewHolder(CardView card) {
-			super(card);
-			this.card = card;
-			bigPicture = (ImageView) card.findViewById(R.id.big_picture);
-			icon = (ImageView) card.findViewById(R.id.icon);
-			date = (TextView) card.findViewById(R.id.date);
-			title = (TextView) card.findViewById(R.id.title);
-			text = (TextView) card.findViewById(R.id.text);
-			sub = (TextView) card.findViewById(R.id.sub);
+		private ViewHolder(CardView cardView) {
+			super(cardView);
+			this.cardView = cardView;
+			findViews();
+			initSubTextView();
+		}
 
-			sub.setTypeface(sub.getTypeface(), Typeface.ITALIC);
+		private void findViews() {
+			bigPictureView = (ImageView) cardView.findViewById(R.id.big_picture);
+			iconView = (ImageView) cardView.findViewById(R.id.icon);
+			dateView = (TextView) cardView.findViewById(R.id.date);
+			titleView = (TextView) cardView.findViewById(R.id.title);
+			textView = (TextView) cardView.findViewById(R.id.text);
+			subTextView = (TextView) cardView.findViewById(R.id.sub);
+		}
+
+		private void initSubTextView() {
+			subTextView.setTypeface(subTextView.getTypeface(), Typeface.ITALIC);
 		}
 	}
 }

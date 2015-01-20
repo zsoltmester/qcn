@@ -66,7 +66,7 @@ public abstract class QuickCircleBaseActivity extends Activity implements CoverE
 	private void initCoverLayout() {
 		initCoverInformationFromDB();
 		setContentView(getCoverLayoutIdentifier());
-		coverView = (FrameLayout) findViewById(R.id.cover);
+		coverView = (FrameLayout) findViewById(R.id.cover_container);
 		cropLayoutForTheCircleSize();
 	}
 

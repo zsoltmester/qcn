@@ -1,12 +1,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_marginTop="@dimen/desktop_margin_vertical"
 	android:layout_marginBottom="@dimen/desktop_margin_vertical"
 	android:layout_marginLeft="@dimen/desktop_margin_horizontal"
-	android:layout_marginRight="@dimen/desktop_margin_horizontal"
-	tools:context=".desktop.DesktopActivity">
+	android:layout_marginRight="@dimen/desktop_margin_horizontal">
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -43,7 +41,7 @@
 			</LinearLayout>
 
 			<Button
-				android:id="@+id/changes"
+				android:id="@+id/changes_btn"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="@dimen/desktop_margin_horizontal"
@@ -82,7 +80,7 @@
 			</LinearLayout>
 
 			<Button
-				android:id="@+id/rate"
+				android:id="@+id/rate_btn"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="@dimen/desktop_margin_horizontal"
@@ -121,7 +119,7 @@
 			</LinearLayout>
 
 			<Button
-				android:id="@+id/email"
+				android:id="@+id/email_btn"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textColor="@color/btn_text"
@@ -136,17 +134,31 @@
 			android:layout_marginBottom="@dimen/desktop_margin_vertical"
 			android:orientation="horizontal">
 
-			<TextView
+			<LinearLayout
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_weight="1"
 				android:layout_gravity="center_vertical"
-				android:textColor="@color/caption"
-				android:textSize="@dimen/desktop_caption_size"
-				android:text="@string/contact_open_source" />
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@color/subhead"
+					android:textSize="@dimen/desktop_subhead_size"
+					android:text="@string/contact_open_source_upper_text" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@color/caption"
+					android:textSize="@dimen/desktop_caption_size"
+					android:text="@string/contact_open_source_lower_text" />
+
+			</LinearLayout>
 
 			<Button
-				android:id="@+id/github"
+				android:id="@+id/source_code_btn"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textColor="@color/btn_text"
@@ -155,29 +167,6 @@
 
 		</LinearLayout>
 
-		<!--<LinearLayout-->
-			<!--android:layout_width="match_parent"-->
-			<!--android:layout_height="wrap_content"-->
-			<!--android:layout_marginBottom="@dimen/desktop_margin_vertical"-->
-			<!--android:orientation="horizontal">-->
-
-			<!--<TextView-->
-				<!--android:layout_width="0dp"-->
-				<!--android:layout_height="wrap_content"-->
-				<!--android:layout_weight="1"-->
-				<!--android:layout_gravity="center_vertical"-->
-				<!--android:textColor="@color/caption"-->
-				<!--android:textSize="@dimen/desktop_caption_size"-->
-				<!--android:text="@string/contact_issues" />-->
-
-			<!--<Button-->
-				<!--android:layout_width="wrap_content"-->
-				<!--android:layout_height="wrap_content"-->
-				<!--android:textColor="@color/btn_text"-->
-				<!--android:layout_marginStart="@dimen/desktop_margin_horizontal"-->
-				<!--android:text="@string/contact_readme" />-->
-
-		<!--</LinearLayout>-->
-
 	</LinearLayout>
+	
 </ScrollView>

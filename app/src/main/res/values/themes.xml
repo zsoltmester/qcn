@@ -25,9 +25,9 @@
 	<!-- QC themes -->
 
 	<style name="GreenTheme" parent="android:Theme.Material.Light.NoActionBar.Fullscreen">
-		<item name="backBtnNormal">@color/green_A200</item>
-		<item name="backBtnSelected">@color/green_A400</item>
-		<item name="backBtnRipple">@color/green_A700</item>
+		<item name="backBtnNormalColor">@color/green_A200</item>
+		<item name="backBtnSelectedColor">@color/green_A400</item>
+		<item name="backBtnRippleColor">@color/green_A700</item>
 	</style>
 
 </resources>

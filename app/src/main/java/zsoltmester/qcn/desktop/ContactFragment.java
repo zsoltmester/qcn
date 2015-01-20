@@ -34,10 +34,10 @@ public class ContactFragment extends Fragment {
 	}
 
 	private void findButtonsOnLayout() {
-		buttonToChanges = fragmentLayout.findViewById(R.id.changes);
-		buttonToRate = fragmentLayout.findViewById(R.id.rate);
-		buttonToEmail = fragmentLayout.findViewById(R.id.email);
-		buttonToSourceCode = fragmentLayout.findViewById(R.id.github);
+		buttonToChanges = fragmentLayout.findViewById(R.id.changes_btn);
+		buttonToRate = fragmentLayout.findViewById(R.id.rate_btn);
+		buttonToEmail = fragmentLayout.findViewById(R.id.email_btn);
+		buttonToSourceCode = fragmentLayout.findViewById(R.id.source_code_btn);
 	}
 
 	private void initButtonsOnClickListener() {
@@ -52,16 +52,16 @@ public class ContactFragment extends Fragment {
 		@Override
 		public void onClick(View view) {
 			switch (view.getId()) {
-				case R.id.changes:
+				case R.id.changes_btn:
 					openChangeLog();
 					break;
-				case R.id.rate:
+				case R.id.rate_btn:
 					openOnPlayStore();
 					break;
-				case R.id.email:
+				case R.id.email_btn:
 					openEmailApp();
 					break;
-				case R.id.github:
+				case R.id.source_code_btn:
 					openSourceCode();
 					break;
 			}

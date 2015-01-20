@@ -3,5 +3,5 @@
 	android:shape="oval">
 	<solid
 		android:angle="270"
-		android:color="?attr/backBtnSelected" />
+		android:color="?attr/backBtnSelectedColor" />
 </shape>
