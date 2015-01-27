@@ -12,7 +12,6 @@ import android.service.notification.StatusBarNotification;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,6 +24,7 @@ import zsoltmester.qcn.quickcircle.QuickCircleBaseActivity;
 import zsoltmester.qcn.quickcircle.notifications.NotificationListener.HelperBinder;
 import zsoltmester.qcn.tools.Logger;
 import zsoltmester.qcn.ui.SimpleOnGestureListenerWithDoubleTapSupport;
+import zsoltmester.qcn.ui.SwipeDismissRecyclerViewTouchListener;
 
 import static android.view.GestureDetector.OnGestureListener;
 
@@ -33,7 +33,7 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 		NotificationListener.Callback, SimpleOnGestureListenerWithDoubleTapSupport.OnDoubleTapListener {
 
 	private Logger logger = Logger.createWithLogTag(NotificationActivity.class.getSimpleName());
-	private RecyclerView notificationsContainerView;
+	private RecyclerView notificationsListView;
 	private NotificationAdapter notificationAdapter;
 	private NotificationListener notificationListener;
 	private boolean doNotHaveAccessToNotifications;
@@ -62,22 +62,10 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 	}
 
 	private void initNotificationsContainerView() {
-		notificationsContainerView = (RecyclerView) findViewById(R.id.notification_list_container);
-		notificationsContainerView.setLayoutManager(new LinearLayoutManager(this));
-		initDoubleTapDetector();
-		notificationsContainerView.setAdapter(notificationAdapter);
-	}
-
-	private void initDoubleTapDetector() {
-		OnGestureListener simpleOnGestureListenerWithDoubleTapSupport =
-				SimpleOnGestureListenerWithDoubleTapSupport.createWithOnDoubleTapListener(this);
-		final GestureDetector gestureDetector = new GestureDetector(this, simpleOnGestureListenerWithDoubleTapSupport);
-		notificationsContainerView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View view, MotionEvent motionEvent) {
-				return gestureDetector.onTouchEvent(motionEvent);
-			}
-		});
+		notificationsListView = (RecyclerView) findViewById(R.id.notification_list_container);
+		notificationsListView.setLayoutManager(new LinearLayoutManager(this));
+		initTouchListener();
+		notificationsListView.setAdapter(notificationAdapter);
 	}
 
 	private void initBackButton() {
@@ -87,6 +75,36 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 				finish();
 			}
 		});
+	}
+
+	private void initTouchListener() {
+		SwipeDismissRecyclerViewTouchListener touchListener = getSwipeDismissRecyclerViewTouchListener();
+		touchListener.setGestureDetector(getGestureDetector());
+		notificationsListView.setOnTouchListener(touchListener);
+		notificationsListView.setOnScrollListener(touchListener.makeScrollListener());
+	}
+
+	private SwipeDismissRecyclerViewTouchListener getSwipeDismissRecyclerViewTouchListener() {
+		return new SwipeDismissRecyclerViewTouchListener(notificationsListView,
+				new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+					@Override
+					public boolean canDismiss(int position) {
+						return true;
+					}
+
+					@Override
+					public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+						for (int position : reverseSortedPositions) {
+							notificationListener.cancelNotification(statusBarNotifications.get(position).getKey());
+						}
+					}
+				});
+	}
+	
+	private GestureDetector getGestureDetector() {
+		OnGestureListener simpleOnGestureListenerWithDoubleTapSupport =
+				SimpleOnGestureListenerWithDoubleTapSupport.createWithOnDoubleTapListener(this);
+		return new GestureDetector(this, simpleOnGestureListenerWithDoubleTapSupport);
 	}
 
 	@Override
@@ -135,8 +153,8 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 	}
 
 	private void displayErrorViewWithTheGivenText(int textResourceIdentifier) {
-		if (notificationsContainerView != null) {
-			notificationsContainerView.setVisibility(View.GONE);
+		if (notificationsListView != null) {
+			notificationsListView.setVisibility(View.GONE);
 		}
 		TextView errorView = (TextView) findViewById(R.id.error_view);
 		errorView.setVisibility(View.VISIBLE);
@@ -232,11 +250,11 @@ public class NotificationActivity extends QuickCircleBaseActivity implements Ser
 		}
 		super.onCoverOpened();
 	}
-	
+
 	private void openNotificationListenerSettings() {
 		startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
 	}
-	
+
 	private void addThisAppAsDeviceAdmin() {
 		Intent intentToAddThisAppAsDeviceAdmin = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 		intentToAddThisAppAsDeviceAdmin.putExtra(
