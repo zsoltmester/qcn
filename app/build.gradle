@@ -9,12 +9,12 @@ android {
 			keyPassword = '...'
 		}
 	}
-	compileSdkVersion 21
-	buildToolsVersion "21.1.2"
+	compileSdkVersion 22
+	buildToolsVersion "22.0.1"
 	defaultConfig {
 		applicationId 'zsoltmester.qcn'
 		minSdkVersion 21
-		targetSdkVersion 21
+		targetSdkVersion 22
 		versionCode 6
 		versionName "1.2"
 		signingConfig signingConfigs.config

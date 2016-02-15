@@ -1,0 +1,25 @@
+A legjobb app, amivel meg tudod nézni a notifikációid a quick circle tokon. Így nem kell kinyitnod a tokod, hogy kényelmesen megnézd az összes notid.
+A notifokációkat olyan kártyákban látod, amik most lettek bemutatva a lollipopban.  Mindez a gyönyörű material design keretében. Lollipopra optimalizálva.
+
+Sok minden fog még érkezni, tervebn vannak a következőek:
+Sleep for double tap
+Delete action
+Theme change
+
+Ha vannak ötleteid, hibákat szeretnél bejelenteni vagy csak megjegyzésed van, írj nyugodtan.
+
+A teljes app open source: https://github.com/zsoltmester/qcn
+
+-------------------------
+
+The best application to watch all your notifications on your Quick Circle case. The notifications appear on beautiful cards, in a vertically scrollable list.
+The design is based on the new Material Design. Optimised for the Lollipop.
+
+More features in plan:
+- Delete a notification with swipe
+- Sleep for double tap
+- More themes
+
+If you have any ideas, found bugs or you would like to contact me, feel free to send me an email: zsolt.mester67@gmail.com.
+
+This application is open source: https://github.com/zsoltmester/qcn.
